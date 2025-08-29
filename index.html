@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>US Presidents Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4; }
+    .quiz-container { background: white; padding: 20px; border-radius: 12px; width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.5s; }
+    .slide-out { transform: translateX(-100%); opacity: 0; }
+    .slide-in { transform: translateX(100%); opacity: 0; }
+    .active { transform: translateX(0); opacity: 1; }
+    label { display: block; margin-top: 10px; }
+    input, select { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px; width: 100%; border: none; background: #0077cc; color: white; border-radius: 8px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container active" id="quiz">
+    <h2 id="question">Who is the 1st president?</h2>
+    <label>Name:<input type="text" id="name"></label>
+    <label>Years:<input type="text" id="years" placeholder="e.g. 1789–1797"></label>
+    <label>Party:
+      <select id="party">
+        <option>None</option>
+        <option>Federalist</option>
+        <option>Democratic-Republican</option>
+        <option>Democrat</option>
+        <option>Republican</option>
+        <option>Whig</option>
+      </select>
+    </label>
+    <button onclick="submitAnswer()">Submit</button>
+    <p id="feedback"></p>
+  </div>
+
+<script>
+const presidents = [
+  {number: 1, name: "George Washington", years: "1789–1797", party: "None"},
+  {number: 2, name: "John Adams", years: "1797–1801", party: "Federalist"},
+  {number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican"},
+  // ... continue the list
+];
+
+let current = 0;
+let score = 0;
+
+function submitAnswer() {
+  const name = document.getElementById("name").value.trim();
+  const years = document.getElementById("years").value.trim();
+  const party = document.getElementById("party").value;
+
+  const pres = presidents[current];
+  const feedback = document.getElementById("feedback");
+
+  if (name.toLowerCase() === pres.name.toLowerCase() &&
+      years === pres.years &&
+      party === pres.party) {
+    feedback.textContent = "✅ Correct!";
+    score++;
+  } else {
+    feedback.textContent = `❌ Correct: ${pres.name}, ${pres.years}, ${pres.party}`;
+  }
+
+  setTimeout(nextQuestion, 1500);
+}
+
+function nextQuestion() {
+  current++;
+  const quiz = document.getElementById("quiz");
+
+  if (current < presidents.length) {
+    // Slide transition
+    quiz.classList.remove("active");
+    quiz.classList.add("slide-out");
+    setTimeout(() => {
+      document.getElementById("question").textContent =
+        `Who is the ${presidents[current].number} president?`;
+      document.getElementById("name").value = "";
+      document.getElementById("years").value = "";
+      document.getElementById("party").selectedIndex = 0;
+      document.getElementById("feedback").textContent = "";
+      quiz.classList.remove("slide-out");
+      quiz.classList.add("active");
+    }, 500);
+  } else {
+    document.getElementById("quiz").innerHTML =
+      `<h2>Quiz Finished!</h2><p>Your score: ${score}/${presidents.length}</p>`;
+  }
+}
+</script>
+</body>
+</html>
