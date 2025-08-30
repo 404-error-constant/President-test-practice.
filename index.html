@@ -5,7 +5,7 @@
   <title>US Presidents Quiz</title>
   <style>
     body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4; }
-    .quiz-container { background: white; padding: 20px; border-radius: 12px; width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.5s; }
+    .quiz-container { background: white; padding: 20px; border-radius: 12px; width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.5s, opacity 0.5s; }
     .slide-out { transform: translateX(-100%); opacity: 0; }
     .slide-in { transform: translateX(100%); opacity: 0; }
     .active { transform: translateX(0); opacity: 1; }
@@ -17,7 +17,10 @@
 <body>
   <div class="quiz-container active" id="quiz">
     <h2 id="question">Who is the 1st president?</h2>
-    <label>Name:<input type="text" id="name"></label>
+    <label>Name:
+      <input type="text" id="name" list="presidents-list">
+      <datalist id="presidents-list"></datalist>
+    </label>
     <label>Years:<input type="text" id="years" placeholder="e.g. 1789–1797"></label>
     <label>Party:
       <select id="party">
@@ -27,6 +30,7 @@
         <option>Democrat</option>
         <option>Republican</option>
         <option>Whig</option>
+        <option>National Union</option>
       </select>
     </label>
     <button onclick="submitAnswer()">Submit</button>
@@ -38,11 +42,62 @@ const presidents = [
   {number: 1, name: "George Washington", years: "1789–1797", party: "None"},
   {number: 2, name: "John Adams", years: "1797–1801", party: "Federalist"},
   {number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican"},
-  // ... continue the list
+  {number: 4, name: "James Madison", years: "1809–1817", party: "Democratic-Republican"},
+  {number: 5, name: "James Monroe", years: "1817–1825", party: "Democratic-Republican"},
+  {number: 6, name: "John Quincy Adams", years: "1825–1829", party: "Democratic-Republican"},
+  {number: 7, name: "Andrew Jackson", years: "1829–1837", party: "Democrat"},
+  {number: 8, name: "Martin Van Buren", years: "1837–1841", party: "Democrat"},
+  {number: 9, name: "William Henry Harrison", years: "1841", party: "Whig"},
+  {number: 10, name: "John Tyler", years: "1841–1845", party: "Whig"},
+  {number: 11, name: "James K. Polk", years: "1845–1849", party: "Democrat"},
+  {number: 12, name: "Zachary Taylor", years: "1849–1850", party: "Whig"},
+  {number: 13, name: "Millard Fillmore", years: "1850–1853", party: "Whig"},
+  {number: 14, name: "Franklin Pierce", years: "1853–1857", party: "Democrat"},
+  {number: 15, name: "James Buchanan", years: "1857–1861", party: "Democrat"},
+  {number: 16, name: "Abraham Lincoln", years: "1861–1865", party: "Republican"},
+  {number: 17, name: "Andrew Johnson", years: "1865–1869", party: "National Union"},
+  {number: 18, name: "Ulysses S. Grant", years: "1869–1877", party: "Republican"},
+  {number: 19, name: "Rutherford B. Hayes", years: "1877–1881", party: "Republican"},
+  {number: 20, name: "James A. Garfield", years: "1881", party: "Republican"},
+  {number: 21, name: "Chester A. Arthur", years: "1881–1885", party: "Republican"},
+  {number: 22, name: "Grover Cleveland", years: "1885–1889", party: "Democrat"},
+  {number: 23, name: "Benjamin Harrison", years: "1889–1893", party: "Republican"},
+  {number: 24, name: "Grover Cleveland", years: "1893–1897", party: "Democrat"},
+  {number: 25, name: "William McKinley", years: "1897–1901", party: "Republican"},
+  {number: 26, name: "Theodore Roosevelt", years: "1901–1909", party: "Republican"},
+  {number: 27, name: "William Howard Taft", years: "1909–1913", party: "Republican"},
+  {number: 28, name: "Woodrow Wilson", years: "1913–1921", party: "Democrat"},
+  {number: 29, name: "Warren G. Harding", years: "1921–1923", party: "Republican"},
+  {number: 30, name: "Calvin Coolidge", years: "1923–1929", party: "Republican"},
+  {number: 31, name: "Herbert Hoover", years: "1929–1933", party: "Republican"},
+  {number: 32, name: "Franklin D. Roosevelt", years: "1933–1945", party: "Democrat"},
+  {number: 33, name: "Harry S. Truman", years: "1945–1953", party: "Democrat"},
+  {number: 34, name: "Dwight D. Eisenhower", years: "1953–1961", party: "Republican"},
+  {number: 35, name: "John F. Kennedy", years: "1961–1963", party: "Democrat"},
+  {number: 36, name: "Lyndon B. Johnson", years: "1963–1969", party: "Democrat"},
+  {number: 37, name: "Richard Nixon", years: "1969–1974", party: "Republican"},
+  {number: 38, name: "Gerald Ford", years: "1974–1977", party: "Republican"},
+  {number: 39, name: "Jimmy Carter", years: "1977–1981", party: "Democrat"},
+  {number: 40, name: "Ronald Reagan", years: "1981–1989", party: "Republican"},
+  {number: 41, name: "George H. W. Bush", years: "1989–1993", party: "Republican"},
+  {number: 42, name: "Bill Clinton", years: "1993–2001", party: "Democrat"},
+  {number: 43, name: "George W. Bush", years: "2001–2009", party: "Republican"},
+  {number: 44, name: "Barack Obama", years: "2009–2017", party: "Democrat"},
+  {number: 45, name: "Donald Trump", years: "2017–2021", party: "Republican"},
+  {number: 46, name: "Joe Biden", years: "2021–2025", party: "Democrat"}
+  {number: 47, name: "Donald Trump", years: "2025–present", party: "Republican"}
 ];
 
 let current = 0;
 let score = 0;
+
+// Fill datalist with all names
+const datalist = document.getElementById("presidents-list");
+presidents.forEach(p => {
+  let opt = document.createElement("option");
+  opt.value = p.name;
+  datalist.appendChild(opt);
+});
 
 function submitAnswer() {
   const name = document.getElementById("name").value.trim();
@@ -69,7 +124,6 @@ function nextQuestion() {
   const quiz = document.getElementById("quiz");
 
   if (current < presidents.length) {
-    // Slide transition
     quiz.classList.remove("active");
     quiz.classList.add("slide-out");
     setTimeout(() => {
