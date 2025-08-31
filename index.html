@@ -2,62 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>US Presidents Quiz</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4; }
-    .quiz-container { background: white; padding: 20px; border-radius: 12px; width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.5s, opacity 0.5s; position: relative; }
-    .slide-out { transform: translateX(-100%); opacity: 0; }
-    .active { transform: translateX(0); opacity: 1; }
-    label { display: block; margin-top: 10px; }
-    input, select { width: 100%; padding: 8px; margin-top: 5px; }
-    button { margin-top: 15px; padding: 10px; width: 100%; border: none; background: #0077cc; color: white; border-radius: 8px; cursor: pointer; }
-    
-    /* Autocomplete dropdown */
-    .suggestions {
-      position: absolute;
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f0f0;
+    }
+    .quiz-container {
       background: white;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      width: calc(100% - 40px);
-      max-height: 150px;
-      overflow-y: auto;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      transition: transform 0.5s ease;
+    }
+    input, select, button {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+    }
+    .hidden {
       display: none;
-      z-index: 1000;
-    }
-    .suggestions div {
-      padding: 8px;
-      cursor: pointer;
-    }
-    .suggestions div:hover {
-      background: #eee;
     }
   </style>
 </head>
 <body>
-  <div class="quiz-container active" id="quiz">
-    <h2 id="question">Who is the 1st president?</h2>
-    <label>Name:
-      <input type="text" id="name" autocomplete="off">
-      <div class="suggestions" id="suggestions"></div>
-    </label>
-    <label>Years:<input type="text" id="years" placeholder="e.g. 1789–1797"></label>
-    <label>Party:
-      <select id="party">
-        <option>None</option>
-        <option>Federalist</option>
-        <option>Democratic-Republican</option>
-        <option>Democrat</option>
-        <option>Republican</option>
-        <option>Whig</option>
-        <option>National Union</option>
-      </select>
-    </label>
-    <button onclick="submitAnswer()">Submit</button>
+  <div class="quiz-container" id="quiz">
+    <h2 id="question">Who was the 1st President?</h2>
+    <input type="text" id="nameInput" placeholder="Enter President's name" list="presidentList">
+    <datalist id="presidentList"></datalist>
+    <input type="text" id="yearInput" placeholder="Enter years (e.g., 1789–1797)">
+    <select id="partyInput">
+      <option value="">Select Party</option>
+      <option>None</option>
+      <option>Federalist</option>
+      <option>Democratic-Republican</option>
+      <option>Democrat</option>
+      <option>Whig</option>
+      <option>Republican</option>
+    </select>
+    <button id="submitBtn">Submit</button>
     <p id="feedback"></p>
   </div>
 
-<script>
-const presidents = [
+  <script>
+    const presidents = [
   {number: 1, name: "George Washington", years: "1789–1797", party: "None"},
   {number: 2, name: "John Adams", years: "1797–1801", party: "Federalist"},
   {number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican"},
@@ -105,82 +102,53 @@ const presidents = [
   {number: 45, name: "Donald Trump", years: "2017–2021", party: "Republican"},
   {number: 46, name: "Joe Biden", years: "2021–Present", party: "Democrat"}
   {number: 47, name: "Donald Trump", years: "2025–Present", party: "Republican"}
-];
+    ];
 
-let current = 0;
-let score = 0;
+    let current = 0;
+    const questionEl = document.getElementById("question");
+    const nameInput = document.getElementById("nameInput");
+    const yearInput = document.getElementById("yearInput");
+    const partyInput = document.getElementById("partyInput");
+    const feedback = document.getElementById("feedback");
+    const datalist = document.getElementById("presidentList");
 
-const nameInput = document.getElementById("name");
-const suggestionsBox = document.getElementById("suggestions");
-
-// Live autocomplete
-nameInput.addEventListener("input", () => {
-  const val = nameInput.value.toLowerCase();
-  suggestionsBox.innerHTML = "";
-  if (val.length === 0) {
-    suggestionsBox.style.display = "none";
-    return;
-  }
-  const matches = presidents.filter(p => p.name.toLowerCase().includes(val));
-  if (matches.length > 0) {
-    matches.forEach(p => {
-      const div = document.createElement("div");
-      div.textContent = p.name;
-      div.onclick = () => {
-        nameInput.value = p.name;
-        suggestionsBox.style.display = "none";
-      };
-      suggestionsBox.appendChild(div);
+    // Populate datalist with ALL presidents
+    presidents.forEach(p => {
+      let option = document.createElement("option");
+      option.value = p.name;
+      datalist.appendChild(option);
     });
-    suggestionsBox.style.display = "block";
-  } else {
-    suggestionsBox.style.display = "none";
-  }
-});
 
-function submitAnswer() {
-  const name = nameInput.value.trim();
-  const years = document.getElementById("years").value.trim();
-  const party = document.getElementById("party").value;
-
-  const pres = presidents[current];
-  const feedback = document.getElementById("feedback");
-
-  if (name.toLowerCase() === pres.name.toLowerCase() &&
-      years === pres.years &&
-      party === pres.party) {
-    feedback.textContent = "✅ Correct!";
-    score++;
-  } else {
-    feedback.textContent = `❌ Correct: ${pres.name}, ${pres.years}, ${pres.party}`;
-  }
-
-  suggestionsBox.style.display = "none"; // hide autocomplete
-  setTimeout(nextQuestion, 1500);
-}
-
-function nextQuestion() {
-  current++;
-  const quiz = document.getElementById("quiz");
-
-  if (current < presidents.length) {
-    quiz.classList.remove("active");
-    quiz.classList.add("slide-out");
-    setTimeout(() => {
-      document.getElementById("question").textContent =
-        `Who is the ${presidents[current].number} president?`;
+    function loadQuestion() {
+      let p = presidents[current];
+      questionEl.textContent = `Who was the ${p.number} President?`;
       nameInput.value = "";
-      document.getElementById("years").value = "";
-      document.getElementById("party").selectedIndex = 0;
-      document.getElementById("feedback").textContent = "";
-      quiz.classList.remove("slide-out");
-      quiz.classList.add("active");
-    }, 500);
-  } else {
-    document.getElementById("quiz").innerHTML =
-      `<h2>Quiz Finished!</h2><p>Your score: ${score}/${presidents.length}</p>`;
-  }
-}
-</script>
+      yearInput.value = "";
+      partyInput.value = "";
+      feedback.textContent = "";
+    }
+
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      let p = presidents[current];
+      if (nameInput.value.trim().toLowerCase() === p.name.toLowerCase() &&
+          yearInput.value.trim() === p.years &&
+          partyInput.value === p.party) {
+        feedback.textContent = "✅ Correct!";
+        setTimeout(() => {
+          current++;
+          if (current < presidents.length) {
+            loadQuestion();
+          } else {
+            questionEl.textContent = "🎉 You finished all presidents!";
+            document.getElementById("submitBtn").disabled = true;
+          }
+        }, 1000);
+      } else {
+        feedback.textContent = "❌ Try again!";
+      }
+    });
+
+    loadQuestion();
+  </script>
 </body>
 </html>
