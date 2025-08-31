@@ -5,21 +5,40 @@
   <title>US Presidents Quiz</title>
   <style>
     body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4; }
-    .quiz-container { background: white; padding: 20px; border-radius: 12px; width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.5s, opacity 0.5s; }
+    .quiz-container { background: white; padding: 20px; border-radius: 12px; width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.5s, opacity 0.5s; position: relative; }
     .slide-out { transform: translateX(-100%); opacity: 0; }
-    .slide-in { transform: translateX(100%); opacity: 0; }
     .active { transform: translateX(0); opacity: 1; }
     label { display: block; margin-top: 10px; }
     input, select { width: 100%; padding: 8px; margin-top: 5px; }
     button { margin-top: 15px; padding: 10px; width: 100%; border: none; background: #0077cc; color: white; border-radius: 8px; cursor: pointer; }
+    
+    /* Autocomplete dropdown */
+    .suggestions {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: calc(100% - 40px);
+      max-height: 150px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000;
+    }
+    .suggestions div {
+      padding: 8px;
+      cursor: pointer;
+    }
+    .suggestions div:hover {
+      background: #eee;
+    }
   </style>
 </head>
 <body>
   <div class="quiz-container active" id="quiz">
     <h2 id="question">Who is the 1st president?</h2>
     <label>Name:
-      <input type="text" id="name" list="presidents-list">
-      <datalist id="presidents-list"></datalist>
+      <input type="text" id="name" autocomplete="off">
+      <div class="suggestions" id="suggestions"></div>
     </label>
     <label>Years:<input type="text" id="years" placeholder="e.g. 1789–1797"></label>
     <label>Party:
@@ -84,23 +103,43 @@ const presidents = [
   {number: 43, name: "George W. Bush", years: "2001–2009", party: "Republican"},
   {number: 44, name: "Barack Obama", years: "2009–2017", party: "Democrat"},
   {number: 45, name: "Donald Trump", years: "2017–2021", party: "Republican"},
-  {number: 46, name: "Joe Biden", years: "2021–2025", party: "Democrat"}
-  {number: 47, name: "Donald Trump", years: "2025–present", party: "Republican"}
+  {number: 46, name: "Joe Biden", years: "2021–Present", party: "Democrat"}
+  {number: 47, name: "Donald Trump", years: "2025–Present", party: "Republican"}
 ];
 
 let current = 0;
 let score = 0;
 
-// Fill datalist with all names
-const datalist = document.getElementById("presidents-list");
-presidents.forEach(p => {
-  let opt = document.createElement("option");
-  opt.value = p.name;
-  datalist.appendChild(opt);
+const nameInput = document.getElementById("name");
+const suggestionsBox = document.getElementById("suggestions");
+
+// Live autocomplete
+nameInput.addEventListener("input", () => {
+  const val = nameInput.value.toLowerCase();
+  suggestionsBox.innerHTML = "";
+  if (val.length === 0) {
+    suggestionsBox.style.display = "none";
+    return;
+  }
+  const matches = presidents.filter(p => p.name.toLowerCase().includes(val));
+  if (matches.length > 0) {
+    matches.forEach(p => {
+      const div = document.createElement("div");
+      div.textContent = p.name;
+      div.onclick = () => {
+        nameInput.value = p.name;
+        suggestionsBox.style.display = "none";
+      };
+      suggestionsBox.appendChild(div);
+    });
+    suggestionsBox.style.display = "block";
+  } else {
+    suggestionsBox.style.display = "none";
+  }
 });
 
 function submitAnswer() {
-  const name = document.getElementById("name").value.trim();
+  const name = nameInput.value.trim();
   const years = document.getElementById("years").value.trim();
   const party = document.getElementById("party").value;
 
@@ -116,6 +155,7 @@ function submitAnswer() {
     feedback.textContent = `❌ Correct: ${pres.name}, ${pres.years}, ${pres.party}`;
   }
 
+  suggestionsBox.style.display = "none"; // hide autocomplete
   setTimeout(nextQuestion, 1500);
 }
 
@@ -129,7 +169,7 @@ function nextQuestion() {
     setTimeout(() => {
       document.getElementById("question").textContent =
         `Who is the ${presidents[current].number} president?`;
-      document.getElementById("name").value = "";
+      nameInput.value = "";
       document.getElementById("years").value = "";
       document.getElementById("party").selectedIndex = 0;
       document.getElementById("feedback").textContent = "";
