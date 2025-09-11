@@ -1,141 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>US Presidents Quiz</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f0f0f0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: #f0f0f0;
     }
     .quiz-container {
       background: white;
       padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       width: 90%;
       max-width: 500px;
       text-align: center;
-      transition: transform 0.5s ease;
     }
-    input, select, button {
-      margin: 0.5rem 0;
-      padding: 0.5rem;
-      font-size: 1rem;
+    .choice-btn {
+      display: block;
       width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      transition: background 0.2s;
+    }
+    .choice-btn:hover {
+      background-color: #e0e0e0;
+    }
+    #feedback {
+      margin-top: 1rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="quiz-container" id="quiz">
-    <h2 id="question">Who was the 1st President?</h2>
-    <input type="text" id="nameInput" placeholder="Enter President's name">
-    <input type="text" id="yearInput" placeholder="Enter years (e.g., 1789–1797)">
-    <select id="partyInput">
-      <option value="">Select Party</option>
-      <option>None</option>
-      <option>Federalist</option>
-      <option>Democratic-Republican</option>
-      <option>Democrat</option>
-      <option>Whig</option>
-      <option>Republican</option>
-      <option>National Union</option>
-    </select>
-    <button id="submitBtn">Submit</button>
+  <div class="quiz-container">
+    <h2 id="question">Who was the Xth President?</h2>
+    <div id="choices"></div>
     <p id="feedback"></p>
   </div>
 
   <script>
     const presidents = [
-      {number: 1, name: "George Washington", years: "1789–1797", party: "None"},
-      {number: 2, name: "John Adams", years: "1797–1801", party: "Federalist"},
-      {number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican"},
-      {number: 4, name: "James Madison", years: "1809–1817", party: "Democratic-Republican"},
-      {number: 5, name: "James Monroe", years: "1817–1825", party: "Democratic-Republican"},
-      {number: 6, name: "John Quincy Adams", years: "1825–1829", party: "Democratic-Republican"},
-      {number: 7, name: "Andrew Jackson", years: "1829–1837", party: "Democrat"},
-      {number: 8, name: "Martin Van Buren", years: "1837–1841", party: "Democrat"},
-      {number: 9, name: "William Henry Harrison", years: "1841", party: "Whig"},
-      {number: 10, name: "John Tyler", years: "1841–1845", party: "Whig"},
-      {number: 11, name: "James K. Polk", years: "1845–1849", party: "Democrat"},
-      {number: 12, name: "Zachary Taylor", years: "1849–1850", party: "Whig"},
-      {number: 13, name: "Millard Fillmore", years: "1850–1853", party: "Whig"},
-      {number: 14, name: "Franklin Pierce", years: "1853–1857", party: "Democrat"},
-      {number: 15, name: "James Buchanan", years: "1857–1861", party: "Democrat"},
-      {number: 16, name: "Abraham Lincoln", years: "1861–1865", party: "Republican"},
-      {number: 17, name: "Andrew Johnson", years: "1865–1869", party: "National Union"},
-      {number: 18, name: "Ulysses S. Grant", years: "1869–1877", party: "Republican"},
-      {number: 19, name: "Rutherford B. Hayes", years: "1877–1881", party: "Republican"},
-      {number: 20, name: "James A. Garfield", years: "1881", party: "Republican"},
-      {number: 21, name: "Chester A. Arthur", years: "1881–1885", party: "Republican"},
-      {number: 22, name: "Grover Cleveland", years: "1885–1889", party: "Democrat"},
-      {number: 23, name: "Benjamin Harrison", years: "1889–1893", party: "Republican"},
-      {number: 24, name: "Grover Cleveland", years: "1893–1897", party: "Democrat"},
-      {number: 25, name: "William McKinley", years: "1897–1901", party: "Republican"},
-      {number: 26, name: "Theodore Roosevelt", years: "1901–1909", party: "Republican"},
-      {number: 27, name: "William Howard Taft", years: "1909–1913", party: "Republican"},
-      {number: 28, name: "Woodrow Wilson", years: "1913–1921", party: "Democrat"},
-      {number: 29, name: "Warren G. Harding", years: "1921–1923", party: "Republican"},
-      {number: 30, name: "Calvin Coolidge", years: "1923–1929", party: "Republican"},
-      {number: 31, name: "Herbert Hoover", years: "1929–1933", party: "Republican"},
-      {number: 32, name: "Franklin D. Roosevelt", years: "1933–1945", party: "Democrat"},
-      {number: 33, name: "Harry S. Truman", years: "1945–1953", party: "Democrat"},
-      {number: 34, name: "Dwight D. Eisenhower", years: "1953–1961", party: "Republican"},
-      {number: 35, name: "John F. Kennedy", years: "1961–1963", party: "Democrat"},
-      {number: 36, name: "Lyndon B. Johnson", years: "1963–1969", party: "Democrat"},
-      {number: 37, name: "Richard Nixon", years: "1969–1974", party: "Republican"},
-      {number: 38, name: "Gerald Ford", years: "1974–1977", party: "Republican"},
-      {number: 39, name: "Jimmy Carter", years: "1977–1981", party: "Democrat"},
-      {number: 40, name: "Ronald Reagan", years: "1981–1989", party: "Republican"},
-      {number: 41, name: "George H. W. Bush", years: "1989–1993", party: "Republican"},
-      {number: 42, name: "Bill Clinton", years: "1993–2001", party: "Democrat"},
-      {number: 43, name: "George W. Bush", years: "2001–2009", party: "Republican"},
-      {number: 44, name: "Barack Obama", years: "2009–2017", party: "Democrat"},
-      {number: 45, name: "Donald Trump", years: "2017–2021", party: "Republican"},
-      {number: 46, name: "Joe Biden", years: "2021–2024", party: "Democrat"},
-      {number: 47, name: "Donald Trump", years: "2025–Present", party: "Republican"}
+      { number: 1, name: "George Washington" },
+      { number: 2, name: "John Adams" },
+      { number: 3, name: "Thomas Jefferson" },
+      { number: 4, name: "James Madison" },
+      { number: 5, name: "James Monroe" },
+      { number: 6, name: "John Quincy Adams" },
+      { number: 7, name: "Andrew Jackson" },
+      { number: 8, name: "Martin Van Buren" },
+      { number: 9, name: "William Henry Harrison" },
+      { number: 10, name: "John Tyler" },
+      { number: 11, name: "James K. Polk" },
+      { number: 12, name: "Zachary Taylor" },
+      { number: 13, name: "Millard Fillmore" },
+      { number: 14, name: "Franklin Pierce" },
+      { number: 15, name: "James Buchanan" },
+      { number: 16, name: "Abraham Lincoln" },
+      { number: 17, name: "Andrew Johnson" },
+      { number: 18, name: "Ulysses S. Grant" },
+      { number: 19, name: "Rutherford B. Hayes" },
+      { number: 20, name: "James A. Garfield" },
+      { number: 21, name: "Chester A. Arthur" },
+      { number: 22, name: "Grover Cleveland" },
+      { number: 23, name: "Benjamin Harrison" },
+      { number: 24, name: "Grover Cleveland" },
+      { number: 25, name: "William McKinley" },
+      { number: 26, name: "Theodore Roosevelt" },
+      { number: 27, name: "William Howard Taft" },
+      { number: 28, name: "Woodrow Wilson" },
+      { number: 29, name: "Warren G. Harding" },
+      { number: 30, name: "Calvin Coolidge" },
+      { number: 31, name: "Herbert Hoover" },
+      { number: 32, name: "Franklin D. Roosevelt" },
+      { number: 33, name: "Harry S. Truman" },
+      { number: 34, name: "Dwight D. Eisenhower" },
+      { number: 35, name: "John F. Kennedy" },
+      { number: 36, name: "Lyndon B. Johnson" },
+      { number: 37, name: "Richard Nixon" },
+      { number: 38, name: "Gerald Ford" },
+      { number: 39, name: "Jimmy Carter" },
+      { number: 40, name: "Ronald Reagan" },
+      { number: 41, name: "George H. W. Bush" },
+      { number: 42, name: "Bill Clinton" },
+      { number: 43, name: "George W. Bush" },
+      { number: 44, name: "Barack Obama" },
+      { number: 45, name: "Donald Trump" },
+      { number: 46, name: "Joe Biden" },
+      { number: 47, name: "Donald Trump" }
     ];
 
     let current = 0;
-    const questionEl = document.getElementById("question");
-    const nameInput = document.getElementById("nameInput");
-    const yearInput = document.getElementById("yearInput");
-    const partyInput = document.getElementById("partyInput");
-    const feedback = document.getElementById("feedback");
 
-    function loadQuestion() {
-      let p = presidents[current];
-      questionEl.textContent = `Who was the ${p.number} President?`;
-      nameInput.value = "";
-      yearInput.value = "";
-      partyInput.value = "";
-      feedback.textContent = "";
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const feedbackEl = document.getElementById("feedback");
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
     }
 
-    document.getElementById("submitBtn").addEventListener("click", () => {
-      let p = presidents[current];
-      if (nameInput.value.trim().toLowerCase() === p.name.toLowerCase() &&
-          yearInput.value.trim() === p.years &&
-          partyInput.value === p.party) {
-        feedback.textContent = "✅ Correct!";
+    function loadQuestion() {
+      feedbackEl.textContent = "";
+      const correct = presidents[current];
+      questionEl.textContent = `Who was the ${correct.number}${getOrdinalSuffix(correct.number)} President?`;
+
+      // Get 3 incorrect choices
+      let incorrect = presidents.filter(p => p.name !== correct.name);
+      let choices = shuffle(incorrect).slice(0, 3);
+      choices.push(correct);
+      shuffle(choices);
+
+      // Render buttons
+      choicesEl.innerHTML = "";
+      choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice.name;
+        btn.classList.add("choice-btn");
+        btn.onclick = () => handleAnswer(choice.name === correct.name);
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(isCorrect) {
+      if (isCorrect) {
+        feedbackEl.textContent = "✅ Correct!";
+        current++;
         setTimeout(() => {
-          current++;
           if (current < presidents.length) {
             loadQuestion();
           } else {
-            questionEl.textContent = "🎉 You finished all presidents!";
-            document.getElementById("submitBtn").disabled = true;
+            questionEl.textContent = "🎉 You've completed the quiz!";
+            choicesEl.innerHTML = "";
           }
         }, 1000);
       } else {
-        feedback.textContent = "❌ Try again!";
+        feedbackEl.textContent = "❌ Try again!";
       }
-    });
+    }
+
+    function getOrdinalSuffix(n) {
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      return s[(v - 20) % 10] || s[v] || s[0];
+    }
 
     loadQuestion();
   </script>
