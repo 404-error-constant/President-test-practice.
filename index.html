@@ -12,6 +12,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      margin: 0;
     }
     .quiz-container {
       background: white;
@@ -45,63 +46,29 @@
 </head>
 <body>
   <div class="quiz-container">
-    <h2 id="question">Who was the Xth President?</h2>
+    <h2 id="question">Question Text</h2>
     <div id="choices"></div>
     <p id="feedback"></p>
   </div>
 
   <script>
     const presidents = [
-      { number: 1, name: "George Washington" },
-      { number: 2, name: "John Adams" },
-      { number: 3, name: "Thomas Jefferson" },
-      { number: 4, name: "James Madison" },
-      { number: 5, name: "James Monroe" },
-      { number: 6, name: "John Quincy Adams" },
-      { number: 7, name: "Andrew Jackson" },
-      { number: 8, name: "Martin Van Buren" },
-      { number: 9, name: "William Henry Harrison" },
-      { number: 10, name: "John Tyler" },
-      { number: 11, name: "James K. Polk" },
-      { number: 12, name: "Zachary Taylor" },
-      { number: 13, name: "Millard Fillmore" },
-      { number: 14, name: "Franklin Pierce" },
-      { number: 15, name: "James Buchanan" },
-      { number: 16, name: "Abraham Lincoln" },
-      { number: 17, name: "Andrew Johnson" },
-      { number: 18, name: "Ulysses S. Grant" },
-      { number: 19, name: "Rutherford B. Hayes" },
-      { number: 20, name: "James A. Garfield" },
-      { number: 21, name: "Chester A. Arthur" },
-      { number: 22, name: "Grover Cleveland" },
-      { number: 23, name: "Benjamin Harrison" },
-      { number: 24, name: "Grover Cleveland" },
-      { number: 25, name: "William McKinley" },
-      { number: 26, name: "Theodore Roosevelt" },
-      { number: 27, name: "William Howard Taft" },
-      { number: 28, name: "Woodrow Wilson" },
-      { number: 29, name: "Warren G. Harding" },
-      { number: 30, name: "Calvin Coolidge" },
-      { number: 31, name: "Herbert Hoover" },
-      { number: 32, name: "Franklin D. Roosevelt" },
-      { number: 33, name: "Harry S. Truman" },
-      { number: 34, name: "Dwight D. Eisenhower" },
-      { number: 35, name: "John F. Kennedy" },
-      { number: 36, name: "Lyndon B. Johnson" },
-      { number: 37, name: "Richard Nixon" },
-      { number: 38, name: "Gerald Ford" },
-      { number: 39, name: "Jimmy Carter" },
-      { number: 40, name: "Ronald Reagan" },
-      { number: 41, name: "George H. W. Bush" },
-      { number: 42, name: "Bill Clinton" },
-      { number: 43, name: "George W. Bush" },
-      { number: 44, name: "Barack Obama" },
-      { number: 45, name: "Donald Trump" },
-      { number: 46, name: "Joe Biden" },
-      { number: 47, name: "Donald Trump" }
+      { number: 1, name: "George Washington", years: "1789–1797", party: "None" },
+      { number: 2, name: "John Adams", years: "1797–1801", party: "Federalist" },
+      { number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican" },
+      { number: 4, name: "James Madison", years: "1809–1817", party: "Democratic-Republican" },
+      { number: 5, name: "James Monroe", years: "1817–1825", party: "Democratic-Republican" },
+      { number: 6, name: "John Quincy Adams", years: "1825–1829", party: "Democratic-Republican" },
+      { number: 7, name: "Andrew Jackson", years: "1829–1837", party: "Democrat" },
+      { number: 8, name: "Martin Van Buren", years: "1837–1841", party: "Democrat" },
+      { number: 9, name: "William Henry Harrison", years: "1841", party: "Whig" },
+      { number: 10, name: "John Tyler", years: "1841–1845", party: "Whig" },
+      // You can add more presidents if needed
     ];
 
+    const questionStages = ['name', 'years', 'party'];
     let current = 0;
+    let stage = 0;
 
     const questionEl = document.getElementById("question");
     const choicesEl = document.getElementById("choices");
@@ -111,24 +78,48 @@
       return array.sort(() => Math.random() - 0.5);
     }
 
+    function getOrdinalSuffix(n) {
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      return s[(v - 20) % 10] || s[v] || s[0];
+    }
+
     function loadQuestion() {
       feedbackEl.textContent = "";
-      const correct = presidents[current];
-      questionEl.textContent = `Who was the ${correct.number}${getOrdinalSuffix(correct.number)} President?`;
+      const p = presidents[current];
+      const type = questionStages[stage];
+      let correctAnswer;
+      let options;
 
-      // Get 3 incorrect choices
-      let incorrect = presidents.filter(p => p.name !== correct.name);
-      let choices = shuffle(incorrect).slice(0, 3);
+      if (type === 'name') {
+        questionEl.textContent = `Who was the ${p.number}${getOrdinalSuffix(p.number)} President?`;
+        correctAnswer = p.name;
+        options = presidents.map(x => x.name);
+      } else if (type === 'years') {
+        questionEl.textContent = `What years did ${p.name} serve?`;
+        correctAnswer = p.years;
+        options = presidents.map(x => x.years);
+      } else if (type === 'party') {
+        questionEl.textContent = `What was ${p.name}'s political party?`;
+        correctAnswer = p.party;
+        options = presidents.map(x => x.party);
+      }
+
+      createChoices(correctAnswer, options);
+    }
+
+    function createChoices(correct, allOptions) {
+      const unique = [...new Set(allOptions.filter(opt => opt !== correct))];
+      const choices = shuffle(unique).slice(0, 3);
       choices.push(correct);
       shuffle(choices);
 
-      // Render buttons
       choicesEl.innerHTML = "";
       choices.forEach(choice => {
         const btn = document.createElement("button");
-        btn.textContent = choice.name;
-        btn.classList.add("choice-btn");
-        btn.onclick = () => handleAnswer(choice.name === correct.name);
+        btn.textContent = choice;
+        btn.className = "choice-btn";
+        btn.onclick = () => handleAnswer(choice === correct);
         choicesEl.appendChild(btn);
       });
     }
@@ -136,24 +127,23 @@
     function handleAnswer(isCorrect) {
       if (isCorrect) {
         feedbackEl.textContent = "✅ Correct!";
-        current++;
         setTimeout(() => {
+          stage++;
+          if (stage >= questionStages.length) {
+            stage = 0;
+            current++;
+          }
           if (current < presidents.length) {
             loadQuestion();
           } else {
             questionEl.textContent = "🎉 You've completed the quiz!";
             choicesEl.innerHTML = "";
+            feedbackEl.textContent = "";
           }
-        }, 1000);
+        }, 800);
       } else {
         feedbackEl.textContent = "❌ Try again!";
       }
-    }
-
-    function getOrdinalSuffix(n) {
-      const s = ["th", "st", "nd", "rd"];
-      const v = n % 100;
-      return s[(v - 20) % 10] || s[v] || s[0];
     }
 
     loadQuestion();
