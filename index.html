@@ -13,17 +13,7 @@
       align-items: center;
       height: 100vh;
       margin: 0;
-    }
-    footer {
-      position: fixed;
-      bottom: 10px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      font-size: 0.85rem;
-      color: #666;
-      padding: 0.5rem;
-      background: transparent;
+      flex-direction: column;
     }
 
     .quiz-container {
@@ -35,6 +25,7 @@
       max-width: 500px;
       text-align: center;
     }
+
     .choice-btn {
       display: block;
       width: 100%;
@@ -47,43 +38,42 @@
       background-color: #f9f9f9;
       transition: background 0.2s;
     }
+
     .choice-btn:hover {
       background-color: #e0e0e0;
     }
+
     #feedback {
       margin-top: 1rem;
       font-weight: bold;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #666;
+      padding: 0.5rem;
+      background: transparent;
     }
   </style>
 </head>
 <body>
   <div class="quiz-container">
-    <h2 id="question">Question Text</h2>
+    <h2 id="question">Loading question...</h2>
     <div id="choices"></div>
     <p id="feedback"></p>
   </div>
 
+  <footer>
+    Pre-release beta 9.12 · Report any bugs or suggestions to Caleb Ybarra, or email me
+  </footer>
+
   <script>
-
-function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
-
-// Shuffle once at the start
-shuffle(presidents);
-
-    
     const presidents = [
-      { number: 1, name: "George Washington", years: "1789–1797", party: "None" },
-      { number: 2, name: "John Adams", years: "1797–1801", party: "Federalist" },
-      { number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican" },
-      { number: 4, name: "James Madison", years: "1809–1817", party: "Democratic-Republican" },
-      { number: 5, name: "James Monroe", years: "1817–1825", party: "Democratic-Republican" },
-      { number: 6, name: "John Quincy Adams", years: "1825–1829", party: "Democratic-Republican" },
-      { number: 7, name: "Andrew Jackson", years: "1829–1837", party: "Democrat" },
-      { number: 8, name: "Martin Van Buren", years: "1837–1841", party: "Democrat" },
-      { number: 9, name: "William Henry Harrison", years: "1841", party: "Whig" },
-      { number: 10, name: "John Tyler", years: "1841–1845", party: "Whig" },
       { number: 11, name: "James K. Polk", years: "1845–1849", party: "Democratic" },
       { number: 12, name: "Zachary Taylor", years: "1849–1850", party: "Whig" },
       { number: 13, name: "Millard Fillmore", years: "1850–1853", party: "Whig" },
@@ -121,28 +111,27 @@ shuffle(presidents);
       { number: 45, name: "Donald Trump", years: "2017–2021", party: "Republican" },
       { number: 46, name: "Joe Biden", years: "2021–2024", party: "Democratic" },
       { number: 47, name: "Donald Trump", years: "2025–Present", party: "Republican" }
-
     ];
 
-  const questionStages = ['name', 'years', 'party'];
-let current = 0;
-let stage = 0;
+    const questionStages = ['name', 'years', 'party'];
+    let current = 0;
+    let stage = 0;
 
-const questionEl = document.getElementById("question");
-const choicesEl = document.getElementById("choices");
-const feedbackEl = document.getElementById("feedback");
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const feedbackEl = document.getElementById("feedback");
 
-function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
 
-shuffle(presidents); // ✅ Randomize the order ONCE before quiz starts
+    shuffle(presidents); // ✅ Randomize the order once at the start
 
-function getOrdinalSuffix(n) {
-  const s = ["th", "st", "nd", "rd"];
-  const v = n % 100;
-  return s[(v - 20) % 10] || s[v] || s[0];
-}
+    function getOrdinalSuffix(n) {
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      return s[(v - 20) % 10] || s[v] || s[0];
+    }
 
     function loadQuestion() {
       feedbackEl.textContent = "";
@@ -169,36 +158,34 @@ function getOrdinalSuffix(n) {
     }
 
     function createChoices(correct, allOptions) {
-      const unique = [...new Set(allOptions.filter(opt => opt !== correct))];
-      const choices = shuffle(unique).slice(0, 3);
-      choices.push(correct);
-      shuffle(choices);
-
+      const shuffled = shuffle([...new Set(allOptions)]).filter(opt => opt !== correct).slice(0, 3);
+      const finalOptions = shuffle([correct, ...shuffled]);
       choicesEl.innerHTML = "";
-      choices.forEach(choice => {
+
+      finalOptions.forEach(option => {
         const btn = document.createElement("button");
-        btn.textContent = choice;
         btn.className = "choice-btn";
-        btn.onclick = () => handleAnswer(choice === correct);
+        btn.textContent = option;
+        btn.onclick = () => handleAnswer(option, correct);
         choicesEl.appendChild(btn);
       });
     }
 
-    function handleAnswer(isCorrect) {
-      if (isCorrect) {
+    function handleAnswer(selected, correct) {
+      if (selected === correct) {
         feedbackEl.textContent = "✅ Correct!";
+        stage++;
+        if (stage >= questionStages.length) {
+          stage = 0;
+          current++;
+        }
         setTimeout(() => {
-          stage++;
-          if (stage >= questionStages.length) {
-            stage = 0;
-            current++;
-          }
-          if (current < presidents.length) {
-            loadQuestion();
-          } else {
-            questionEl.textContent = "🎉 You've completed the quiz!";
+          if (current >= presidents.length) {
+            questionEl.textContent = "🎉 You finished all questions!";
             choicesEl.innerHTML = "";
             feedbackEl.textContent = "";
+          } else {
+            loadQuestion();
           }
         }, 800);
       } else {
@@ -208,9 +195,5 @@ function getOrdinalSuffix(n) {
 
     loadQuestion();
   </script>
-  <footer>
-    Pre-release beta 9.12 · Report any bugs or suggestions to Caleb Ybarra, or email me
-  </footer>
 </body>
-
 </html>
