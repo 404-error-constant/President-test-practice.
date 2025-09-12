@@ -64,6 +64,15 @@
   </div>
 
   <script>
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+// Shuffle once at the start
+shuffle(presidents);
+
+    
     const presidents = [
       { number: 1, name: "George Washington", years: "1789–1797", party: "None" },
       { number: 2, name: "John Adams", years: "1797–1801", party: "Federalist" },
@@ -115,23 +124,25 @@
 
     ];
 
-    const questionStages = ['name', 'years', 'party'];
-    let current = 0;
-    let stage = 0;
+  const questionStages = ['name', 'years', 'party'];
+let current = 0;
+let stage = 0;
 
-    const questionEl = document.getElementById("question");
-    const choicesEl = document.getElementById("choices");
-    const feedbackEl = document.getElementById("feedback");
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const feedbackEl = document.getElementById("feedback");
 
-    function shuffle(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
 
-    function getOrdinalSuffix(n) {
-      const s = ["th", "st", "nd", "rd"];
-      const v = n % 100;
-      return s[(v - 20) % 10] || s[v] || s[0];
-    }
+shuffle(presidents); // ✅ Randomize the order ONCE before quiz starts
+
+function getOrdinalSuffix(n) {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
 
     function loadQuestion() {
       feedbackEl.textContent = "";
