@@ -69,7 +69,8 @@
   </div>
 
   <footer>
-    Pre-release beta 9.12, dev logs at https://github.com/404-error-constant/President-test-practice./blob/main/index.html Report any bugs or suggestions to Caleb Ybarra, or email me
+    Pre-release beta 9.12,   dev logs at https://github.com/404-error-constant/President-test-practice./blob/main/index.html 
+    Report any bugs or suggestions to Caleb Ybarra, or email me
   </footer>
 
   <script>
@@ -198,9 +199,12 @@
             loadQuestion();
           }
         }, 800);
-      } else {
-        feedbackEl.textContent = "❌ Try again!";
-      }
+     } else {
+  const messages = ["❌ Try again!", "❌ Be better!  "];
+  const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+  feedbackEl.textContent = randomMessage;
+}
+
     }
 
     loadQuestion();
