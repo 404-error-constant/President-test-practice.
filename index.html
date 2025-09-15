@@ -127,6 +127,7 @@
     const questionStages = ['name', 'years', 'party'];
     let current = 0;
     let stage = 0;
+    let score = 0;
 
     const questionEl = document.getElementById("question");
     const choicesEl = document.getElementById("choices");
@@ -136,7 +137,7 @@
       return array.sort(() => Math.random() - 0.5);
     }
 
-    shuffle(presidents); // ✅ Randomize the order once at the start
+    shuffle(presidents); 
 
     function getOrdinalSuffix(n) {
       const s = ["th", "st", "nd", "rd"];
@@ -184,6 +185,7 @@
 
     function handleAnswer(selected, correct) {
       if (selected === correct) {
+        score += 1;
         feedbackEl.textContent = "✅ Correct!";
         stage++;
         if (stage >= questionStages.length) {
@@ -192,7 +194,7 @@
         }
         setTimeout(() => {
           if (current >= presidents.length) {
-            questionEl.textContent = "🎉 You finished all questions!";
+            questionEl.textContent = "🎉 You finished all questions with a score of" + score + "!";
             choicesEl.innerHTML = "";
             feedbackEl.textContent = "";
           } else {
