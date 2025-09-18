@@ -127,7 +127,7 @@
     const questionStages = ['name', 'years', 'party'];
     let current = 0;
     let stage = 0;
-    let score = 141;
+    let score = 0;
 
     const questionEl = document.getElementById("question");
     const choicesEl = document.getElementById("choices");
@@ -194,7 +194,7 @@
         }
         setTimeout(() => {
           if (current >= presidents.length) {
-            questionEl.textContent = "🎉 You finished all questions with a score of " + score + " out of 141!";
+            questionEl.textContent = "🎉 You finished all questions and only got " + score + " wrong out of 141!";
             choicesEl.innerHTML = "";
             feedbackEl.textContent = "";
           } else {
@@ -203,7 +203,7 @@
         }, 800);
      } else {
   const messages = ["❌ Try again!", "❌ Be better!  "];
-  score -= 1;
+  score += 1;
   const randomMessage = messages[Math.floor(Math.random() * messages.length)];
   feedbackEl.textContent = randomMessage;
 }
