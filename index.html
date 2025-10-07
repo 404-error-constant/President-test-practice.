@@ -67,6 +67,10 @@
     <div id="choices"></div>
     <p id="feedback"></p>
   </div>
+  <div id="timer-container" style="margin-top: 1rem; text-align: center;">
+  <p id="timer" style="font-weight: bold;">⏱️ Time: 0m 0s</p>
+  <button id="toggle-timer-btn" style="margin-top: 0.5rem; font-size: 0.9rem;">Hide Timer</button>
+</div>
 
   <footer>
     Pre-release beta 9.12,   dev logs at https://github.com/404-error-constant/President-test-practice./blob/main 
@@ -133,6 +137,10 @@
     let current = 0;
     let stage = 0;
     let score = 0;
+    let startTime = Date.now();
+    let endTime;
+    let timerInterval;
+
 
     const questionEl = document.getElementById("question");
     const choicesEl = document.getElementById("choices");
@@ -198,7 +206,26 @@
           current++;
         }
         setTimeout(() => {
-          if (current >= presidents.length) {
+if (current >= presidents.length) {
+  clearInterval(timerInterval); // ⛔ Stop the live timer
+
+  endTime = Date.now();
+  const elapsed = Math.floor((endTime - startTime) / 1000); // in seconds
+  const minutes = Math.floor(elapsed / 60);
+  const seconds = elapsed % 60;
+  const timeTaken = `${minutes}m ${seconds}s`;
+
+  questionEl.textContent = `🎉 You finished all questions and only got ${score} wrong out of 141!`;
+
+  const timeEl = document.createElement("p");
+  timeEl.textContent = `⏱️ Time taken: ${timeTaken}`;
+  timeEl.style.fontWeight = "bold";
+  timeEl.style.marginTop = "1rem";
+
+  choicesEl.innerHTML = "";
+  choicesEl.appendChild(timeEl);
+  feedbackEl.textContent = "";
+}
   endTime = Date.now();
   const elapsed = Math.floor((endTime - startTime) / 1000); // in seconds
   const minutes = Math.floor(elapsed / 60);
@@ -224,6 +251,26 @@
   const randomMessage = messages[Math.floor(Math.random() * messages.length)];
   feedbackEl.textContent = randomMessage;
 }
+ // Start live timer
+timerInterval = setInterval(() => {
+  const now = Date.now();
+  const elapsed = Math.floor((now - startTime) / 1000);
+  const minutes = Math.floor(elapsed / 60);
+  const seconds = elapsed % 60;
+  document.getElementById("timer").textContent = `⏱️ Time: ${minutes}m ${seconds}s`;
+}, 1000);
+
+document.getElementById("toggle-timer-btn").onclick = () => {
+  const timer = document.getElementById("timer");
+  const btn = document.getElementById("toggle-timer-btn");
+  if (timer.style.display === "none") {
+    timer.style.display = "block";
+    btn.textContent = "Hide Timer";
+  } else {
+    timer.style.display = "none";
+    btn.textContent = "Show Timer";
+  }
+};
 
     }
 
