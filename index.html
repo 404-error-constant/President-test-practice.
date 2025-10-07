@@ -74,6 +74,11 @@
   </footer>
 
   <script>
+
+    let startTime = Date.now();  // Start time when quiz begins
+    let endTime;                 // Will hold end time when finished
+
+    
     const presidents = [
       { number: 1, name: "George Washington", years: "1789–1797", party: "None" }, 
       { number: 2, name: "John Adams", years: "1797–1801", party: "Federalist" }, 
@@ -194,10 +199,22 @@
         }
         setTimeout(() => {
           if (current >= presidents.length) {
-            questionEl.textContent = "🎉 You finished all questions and only got " + score + " wrong out of 141!";
-            choicesEl.innerHTML = "";
-            feedbackEl.textContent = "";
-          } else {
+  endTime = Date.now();
+  const elapsed = Math.floor((endTime - startTime) / 1000); // in seconds
+  const minutes = Math.floor(elapsed / 60);
+  const seconds = elapsed % 60;
+  const timeTaken = `${minutes}m ${seconds}s`;
+
+  questionEl.textContent = `🎉 You finished all questions and only got ${score} wrong out of 141!`;
+  const timeEl = document.createElement("p");
+  timeEl.textContent = `⏱️ Time taken: ${timeTaken}`;
+  timeEl.style.fontWeight = "bold";
+  timeEl.style.marginTop = "1rem";
+  choicesEl.innerHTML = "";
+  choicesEl.appendChild(timeEl);
+  feedbackEl.textContent = "";
+}
+ else {
             loadQuestion();
           }
         }, 800);
