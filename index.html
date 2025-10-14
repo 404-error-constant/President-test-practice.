@@ -63,7 +63,7 @@
 </head>
 <body>
   <div class="quiz-container">
-    <h2 id="question">Loading question...</h2>
+    <h2 id="question">Yeah, somethings broken...</h2>
     <div id="choices"></div>
     <p id="feedback"></p>
   </div>
@@ -75,8 +75,8 @@
 
   <script>
 
-    let startTime = Date.now();  // Start time when quiz begins
-    let endTime;                 // Will hold end time when finished
+    let startTime = Date.now();  //experimental feature for speedrun mode. 
+    let endTime;                 
 
     
     const presidents = [
@@ -191,7 +191,7 @@
     function handleAnswer(selected, correct) {
       if (selected === correct) {
         
-        feedbackEl.textContent = "✅ Correct!";
+        feedbackEl.textContent = "Correct!";
         stage++;
         if (stage >= questionStages.length) {
           stage = 0;
@@ -207,7 +207,7 @@
 
   questionEl.textContent = `🎉 You finished all questions and only got ${score} wrong out of 141!`;
   const timeEl = document.createElement("p");
-  timeEl.textContent = `⏱️ Time taken: ${timeTaken}`;
+  timeEl.textContent = `⏱️ Time taken: ${timeTaken}`; //speedrun mode.
   timeEl.style.fontWeight = "bold";
   timeEl.style.marginTop = "1rem";
   choicesEl.innerHTML = "";
