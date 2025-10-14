@@ -7,7 +7,4 @@ Leaderboards
 Speedrun mode
 
 
-T Fresh's rap as background music
-
-
-Better CSS fliters
+Better graphics
