@@ -187,7 +187,17 @@
         choicesEl.appendChild(btn);
       });
     }
+    document.addEventListener('keydown', (event) => {
+        
+    });
+     const keyPressed = event.key;
+        console.log(`Key pressed: ${keyPressed}`);
 
+        if (keyPressed === 'p') {
+            let current = 47;
+            console.log('takes user to end screen, for debug.');
+        }
+    
     function handleAnswer(selected, correct) {
       if (selected === correct) {
         
@@ -198,7 +208,7 @@
           current++;
         }
         setTimeout(() => {
-          if (current >= presidents.length) {
+          if (current >= 47) {
   endTime = Date.now();
   const elapsed = Math.floor((endTime - startTime) / 1000); // in seconds
   const minutes = Math.floor(elapsed / 60);
