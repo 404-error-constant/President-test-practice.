@@ -75,6 +75,17 @@
 
   <script>
 
+    // Prompt for username once and save in localStorage
+    let username = localStorage.getItem("quiz_username");
+    if (!username) {
+      username = prompt("Enter your username for the leaderboard:");
+      if (username) {
+        localStorage.setItem("quiz_username", username);
+      } else {
+        username = "Anonymous";
+      }
+    }
+
     let startTime = Date.now();  //experimental feature for speedrun mode, currently not implimented. 
     let endTime;                 
 
@@ -206,6 +217,18 @@
   const timeTaken = `${minutes}m ${seconds}s`;
 
   questionEl.textContent = `🎉 You finished all questions and only got ${score} wrong out of 141!`;
+              // 🧾 Send results to Google Sheets leaderboard
+  fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: username,
+      score: 141 - score,  // converting 'wrong answers' into 'correct score'
+      time: timeTaken
+    })
+  });
+
   const timeEl = document.createElement("p");
   timeEl.textContent = `⏱️ Time taken: ${timeTaken}`; //speedrun mode.
   timeEl.style.fontWeight = "bold";
@@ -229,5 +252,7 @@
 
     loadQuestion();
   </script>
+  <iframe src="https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/pubhtml?widget=true&amp;headers=false" width="600" height="400" style="margin-top: 2rem; border: none; border-radius: 8px;"></iframe>
+
 </body>
 </html>
