@@ -218,7 +218,7 @@
 
   questionEl.textContent = `🎉 You finished all questions and only got ${score} wrong out of 141!`;
               // 🧾 Send results to Google Sheets leaderboard
-  fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
+  fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
     method: "POST",
     mode: "no-cors",
     headers: { "Content-Type": "application/json" },
@@ -252,7 +252,10 @@
 
     loadQuestion();
   </script>
-  <iframe src="https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/pubhtml?widget=true&amp;headers=false" width="600" height="400" style="margin-top: 2rem; border: none; border-radius: 8px;"></iframe>
+  <iframe src="https://docs.google.com/spreadsheets/d/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dgpubhtml?widget=true&amp;headers=false" 
+        width="600" height="400" 
+        style="margin-top: 2rem; border:none; border-radius:8px;">
+</iframe>
 
 </body>
 </html>
