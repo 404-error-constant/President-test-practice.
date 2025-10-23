@@ -73,218 +73,187 @@
     Report any bugs or suggestions to Caleb Ybarra, cybar4535@outlook.com
   </footer>
 
-  <script>
+ <script>
+  // Prompt for username once and save in localStorage
+  let username = localStorage.getItem("quiz_username");
+  if (!username) {
+    username = prompt("Enter your username for the leaderboard:");
+    if (username) {
+      localStorage.setItem("quiz_username", username);
+    } else {
+      username = "Anonymous";
+    }
+  }
 
-    // Prompt for username once and save in localStorage
-    let username = localStorage.getItem("quiz_username");
-    if (!username) {
-      username = prompt("Enter your username for the leaderboard:");
-      if (username) {
-        localStorage.setItem("quiz_username", username);
-      } else {
-        username = "Anonymous";
+  let startTime = Date.now();  
+  let endTime;                 
+
+  const presidents = [
+  { number: 1, name: "George Washington", years: "1789–1797", party: "None" }, 
+  { number: 2, name: "John Adams", years: "1797–1801", party: "Federalist" }, 
+  { number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican" }, 
+  { number: 4, name: "James Madison", years: "1809–1817", party: "Democratic-Republican" }, 
+  { number: 5, name: "James Monroe", years: "1817–1825", party: "Democratic-Republican" }, 
+  { number: 6, name: "John Quincy Adams", years: "1825–1829", party: "Democratic-Republican" }, 
+  { number: 7, name: "Andrew Jackson", years: "1829–1837", party: "Democratic" }, 
+  { number: 8, name: "Martin Van Buren", years: "1837–1841", party: "Democratic" }, 
+  { number: 9, name: "William Henry Harrison", years: "1841", party: "Whig" }, 
+  { number: 10, name: "John Tyler", years: "1841–1845", party: "Whig" },
+  { number: 11, name: "James K. Polk", years: "1845–1849", party: "Democratic" },
+  { number: 12, name: "Zachary Taylor", years: "1849–1850", party: "Whig" },
+  { number: 13, name: "Millard Fillmore", years: "1850–1853", party: "Whig" },
+  { number: 14, name: "Franklin Pierce", years: "1853–1857", party: "Democratic" },
+  { number: 15, name: "James Buchanan", years: "1857–1861", party: "Democratic" },
+  { number: 16, name: "Abraham Lincoln", years: "1861–1865", party: "Republican" },
+  { number: 17, name: "Andrew Johnson", years: "1865–1869", party: "National Union/Democratic" },
+  { number: 18, name: "Ulysses S. Grant", years: "1869–1877", party: "Republican" },
+  { number: 19, name: "Rutherford B. Hayes", years: "1877–1881", party: "Republican" },
+  { number: 20, name: "James A. Garfield", years: "1881", party: "Republican" },
+  { number: 21, name: "Chester A. Arthur", years: "1881–1885", party: "Republican" },
+  { number: 22, name: "Grover Cleveland", years: "1885–1889", party: "Democratic" },
+  { number: 23, name: "Benjamin Harrison", years: "1889–1893", party: "Republican" },
+  { number: 24, name: "Grover Cleveland", years: "1893–1897", party: "Democratic" },
+  { number: 25, name: "William McKinley", years: "1897–1901", party: "Republican" },
+  { number: 26, name: "Theodore Roosevelt", years: "1901–1909", party: "Republican" },
+  { number: 27, name: "William Howard Taft", years: "1909–1913", party: "Republican" },
+  { number: 28, name: "Woodrow Wilson", years: "1913–1921", party: "Democratic" },
+  { number: 29, name: "Warren G. Harding", years: "1921–1923", party: "Republican" },
+  { number: 30, name: "Calvin Coolidge", years: "1923–1929", party: "Republican" },
+  { number: 31, name: "Herbert Hoover", years: "1929–1933", party: "Republican" },
+  { number: 32, name: "Franklin D. Roosevelt", years: "1933–1945", party: "Democratic" },
+  { number: 33, name: "Harry S. Truman", years: "1945–1953", party: "Democratic" },
+  { number: 34, name: "Dwight D. Eisenhower", years: "1953–1961", party: "Republican" },
+  { number: 35, name: "John F. Kennedy", years: "1961–1963", party: "Democratic" },
+  { number: 36, name: "Lyndon B. Johnson", years: "1963–1969", party: "Democratic" },
+  { number: 37, name: "Richard Nixon", years: "1969–1974", party: "Republican" },
+  { number: 38, name: "Gerald Ford", years: "1974–1977", party: "Republican" },
+  { number: 39, name: "Jimmy Carter", years: "1977–1981", party: "Democratic" },
+  { number: 40, name: "Ronald Reagan", years: "1981–1989", party: "Republican" },
+  { number: 41, name: "George H. W. Bush", years: "1989–1993", party: "Republican" },
+  { number: 42, name: "Bill Clinton", years: "1993–2001", party: "Democratic" },
+  { number: 43, name: "George W. Bush", years: "2001–2009", party: "Republican" },
+  { number: 44, name: "Barack Obama", years: "2009–2017", party: "Democratic" },
+  { number: 45, name: "Donald Trump", years: "2017–2021", party: "Republican" },
+  { number: 46, name: "Joe Biden", years: "2021–2024", party: "Democratic" },
+  { number: 47, name: "Donald Trump", years: "2025–Present", party: "Republican" }
+];
+
+  const questionStages = ['name', 'years', 'party'];
+  let current = 0;
+  let stage = 0;
+  let score = 0;
+
+  const questionEl = document.getElementById("question");
+  const choicesEl = document.getElementById("choices");
+  const feedbackEl = document.getElementById("feedback");
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  shuffle(presidents);
+
+  function getOrdinalSuffix(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+  }
+
+  function loadQuestion() {
+    feedbackEl.textContent = "";
+    const p = presidents[current];
+    const type = questionStages[stage];
+    let correctAnswer;
+    let options;
+
+    if (type === 'name') {
+      questionEl.textContent = `Who was the ${p.number}${getOrdinalSuffix(p.number)} President?`;
+      correctAnswer = p.name;
+      options = presidents.map(x => x.name);
+    } else if (type === 'years') {
+      questionEl.textContent = `What years did ${p.name} serve?`;
+      correctAnswer = p.years;
+      options = presidents.map(x => x.years);
+    } else if (type === 'party') {
+      questionEl.textContent = `What was ${p.name}'s political party?`;
+      correctAnswer = p.party;
+      options = presidents.map(x => x.party);
+    }
+
+    createChoices(correctAnswer, options);
+  }
+
+  function createChoices(correct, allOptions) {
+    const shuffled = shuffle([...new Set(allOptions)]).filter(opt => opt !== correct).slice(0, 3);
+    const finalOptions = shuffle([correct, ...shuffled]);
+    choicesEl.innerHTML = "";
+
+    finalOptions.forEach(option => {
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.textContent = option;
+      btn.onclick = () => handleAnswer(option, correct);
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(selected, correct) {
+    if (selected === correct) {
+      feedbackEl.textContent = "Correct!";
+      stage++;
+      if (stage >= questionStages.length) {
+        stage = 0;
+        current++;
       }
-    }
-
-    let startTime = Date.now();  //experimental feature for speedrun mode, currently not implimented. 
-    let endTime;                 
-
-    
-    const presidents = [
-      { number: 1, name: "George Washington", years: "1789–1797", party: "None" }, 
-      { number: 2, name: "John Adams", years: "1797–1801", party: "Federalist" }, 
-      { number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican" }, 
-      { number: 4, name: "James Madison", years: "1809–1817", party: "Democratic-Republican" }, 
-      { number: 5, name: "James Monroe", years: "1817–1825", party: "Democratic-Republican" }, 
-      { number: 6, name: "John Quincy Adams", years: "1825–1829", party: "Democratic-Republican" }, 
-      { number: 7, name: "Andrew Jackson", years: "1829–1837", party: "Democratic" }, 
-      { number: 8, name: "Martin Van Buren", years: "1837–1841", party: "Democratic" }, 
-      { number: 9, name: "William Henry Harrison", years: "1841", party: "Whig" }, 
-      { number: 10, name: "John Tyler", years: "1841–1845", party: "Whig" },
-      { number: 11, name: "James K. Polk", years: "1845–1849", party: "Democratic" },
-      { number: 12, name: "Zachary Taylor", years: "1849–1850", party: "Whig" },
-      { number: 13, name: "Millard Fillmore", years: "1850–1853", party: "Whig" },
-      { number: 14, name: "Franklin Pierce", years: "1853–1857", party: "Democratic" },
-      { number: 15, name: "James Buchanan", years: "1857–1861", party: "Democratic" },
-      { number: 16, name: "Abraham Lincoln", years: "1861–1865", party: "Republican" },
-      { number: 17, name: "Andrew Johnson", years: "1865–1869", party: "National Union/Democratic" },
-      { number: 18, name: "Ulysses S. Grant", years: "1869–1877", party: "Republican" },
-      { number: 19, name: "Rutherford B. Hayes", years: "1877–1881", party: "Republican" },
-      { number: 20, name: "James A. Garfield", years: "1881", party: "Republican" },
-      { number: 21, name: "Chester A. Arthur", years: "1881–1885", party: "Republican" },
-      { number: 22, name: "Grover Cleveland", years: "1885–1889", party: "Democratic" },
-      { number: 23, name: "Benjamin Harrison", years: "1889–1893", party: "Republican" },
-      { number: 24, name: "Grover Cleveland", years: "1893–1897", party: "Democratic" },
-      { number: 25, name: "William McKinley", years: "1897–1901", party: "Republican" },
-      { number: 26, name: "Theodore Roosevelt", years: "1901–1909", party: "Republican" },
-      { number: 27, name: "William Howard Taft", years: "1909–1913", party: "Republican" },
-      { number: 28, name: "Woodrow Wilson", years: "1913–1921", party: "Democratic" },
-      { number: 29, name: "Warren G. Harding", years: "1921–1923", party: "Republican" },
-      { number: 30, name: "Calvin Coolidge", years: "1923–1929", party: "Republican" },
-      { number: 31, name: "Herbert Hoover", years: "1929–1933", party: "Republican" },
-      { number: 32, name: "Franklin D. Roosevelt", years: "1933–1945", party: "Democratic" },
-      { number: 33, name: "Harry S. Truman", years: "1945–1953", party: "Democratic" },
-      { number: 34, name: "Dwight D. Eisenhower", years: "1953–1961", party: "Republican" },
-      { number: 35, name: "John F. Kennedy", years: "1961–1963", party: "Democratic" },
-      { number: 36, name: "Lyndon B. Johnson", years: "1963–1969", party: "Democratic" },
-      { number: 37, name: "Richard Nixon", years: "1969–1974", party: "Republican" },
-      { number: 38, name: "Gerald Ford", years: "1974–1977", party: "Republican" },
-      { number: 39, name: "Jimmy Carter", years: "1977–1981", party: "Democratic" },
-      { number: 40, name: "Ronald Reagan", years: "1981–1989", party: "Republican" },
-      { number: 41, name: "George H. W. Bush", years: "1989–1993", party: "Republican" },
-      { number: 42, name: "Bill Clinton", years: "1993–2001", party: "Democratic" },
-      { number: 43, name: "George W. Bush", years: "2001–2009", party: "Republican" },
-      { number: 44, name: "Barack Obama", years: "2009–2017", party: "Democratic" },
-      { number: 45, name: "Donald Trump", years: "2017–2021", party: "Republican" },
-      { number: 46, name: "Joe Biden", years: "2021–2024", party: "Democratic" },
-      { number: 47, name: "Donald Trump", years: "2025–Present", party: "Republican" }
-    ];
-
-    const questionStages = ['name', 'years', 'party'];
-    let current = 0;
-    let stage = 0;
-    let score = 0;
-
-    const questionEl = document.getElementById("question");
-    const choicesEl = document.getElementById("choices");
-    const feedbackEl = document.getElementById("feedback");
-
-    function shuffle(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
-
-    shuffle(presidents); 
-
-    function getOrdinalSuffix(n) {
-      const s = ["th", "st", "nd", "rd"];
-      const v = n % 100;
-      return s[(v - 20) % 10] || s[v] || s[0];
-    }
-    
-    function loadQuestion() {
-      feedbackEl.textContent = "";
-      const p = presidents[current];
-      const type = questionStages[stage];
-      let correctAnswer;
-      let options;
-
-      if (type === 'name') {
-        questionEl.textContent = `Who was the ${p.number}${getOrdinalSuffix(p.number)} President?`;
-        correctAnswer = p.name;
-        options = presidents.map(x => x.name);
-      } else if (type === 'years') {
-        questionEl.textContent = `What years did ${p.name} serve?`;
-        correctAnswer = p.years;
-        options = presidents.map(x => x.years);
-      } else if (type === 'party') {
-        questionEl.textContent = `What was ${p.name}'s political party?`;
-        correctAnswer = p.party;
-        options = presidents.map(x => x.party);
-      }
-
-      createChoices(correctAnswer, options);
-    }
-
-    function createChoices(correct, allOptions) {
-      const shuffled = shuffle([...new Set(allOptions)]).filter(opt => opt !== correct).slice(0, 3);
-      const finalOptions = shuffle([correct, ...shuffled]);
-      choicesEl.innerHTML = "";
-
-      finalOptions.forEach(option => {
-        const btn = document.createElement("button");
-        btn.className = "choice-btn";
-        btn.textContent = option;
-        btn.onclick = () => handleAnswer(option, correct);
-        choicesEl.appendChild(btn);
-      });
-    }
-
-    function handleAnswer(selected, correct) {
-      if (selected === correct) {
-        
-        feedbackEl.textContent = "Correct!";
-        stage++;
-        if (stage >= questionStages.length) {
-          stage = 0;
-          current++;
+      setTimeout(() => {
+        if (current >= presidents.length) {
+          finishQuiz();
+        } else {
+          loadQuestion();
         }
-        setTimeout(() => {
-          if (current >= presidents.length) {
-  endTime = Date.now();
-  const elapsed = Math.floor((endTime - startTime) / 1000); // in seconds
-  const minutes = Math.floor(elapsed / 60);
-  const seconds = elapsed % 60;
-  const timeTaken = `${minutes}m ${seconds}s`;
+      }, 800);
+    } else {
+      const messages = ["❌ Try again!", "❌ Be better!"];
+      score += 1;
+      feedbackEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+    }
+  }
 
-  questionEl.textContent = `🎉 You finished all questions and only got ${score} wrong out of 141!`;
-              // 🧾 Send results to Google Sheets leaderboard
-  fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: username,
-      score: 141 - score,  // converting 'wrong answers' into 'correct score'
-      time: timeTaken
-    })
-  });
-// === DEV / TEST FEATURE ===
-// Press "P" to instantly complete the quiz with a test score
-document.addEventListener("keydown", (e) => {
-  if (e.key.toLowerCase() === "p") {
-    const fakeTimeTaken = "0m 02s";
-    questionEl.textContent = `🎉 (DEV) Instant complete activated!`;
+  function finishQuiz() {
+    endTime = Date.now();
+    const elapsed = Math.floor((endTime - startTime) / 1000); 
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    const timeTaken = `${minutes}m ${seconds}s`;
+
+    questionEl.textContent = `🎉 You finished all questions and only got ${score} wrong out of 141!`;
     choicesEl.innerHTML = "";
     feedbackEl.textContent = "";
 
-    // send fake result to leaderboard
     fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        username: username + "_TEST",
-        score: 141,
-        time: fakeTimeTaken
+        username: username,
+        score: 141 - score,
+        time: timeTaken
       })
     });
 
-    const doneEl = document.createElement("p");
-    doneEl.textContent = `✅ Sent test score (${fakeTimeTaken}) to leaderboard`;
-    doneEl.style.fontWeight = "bold";
-    choicesEl.appendChild(doneEl);
-  }
-});
-
-            
-  const timeEl = document.createElement("p");
-  timeEl.textContent = `⏱️ Time taken: ${timeTaken}`; //speedrun mode.
-  timeEl.style.fontWeight = "bold";
-  timeEl.style.marginTop = "1rem";
-  choicesEl.innerHTML = "";
-  choicesEl.appendChild(timeEl);
-  feedbackEl.textContent = "";
-}
- else {
-            loadQuestion();
-          }
-        }, 800);
-     } else else {
-      const messages = ["❌ Try again!", "❌ Be better!"];
-      score += 1;
-      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-      feedbackEl.textContent = randomMessage;
-    }
+    const timeEl = document.createElement("p");
+    timeEl.textContent = `⏱️ Time taken: ${timeTaken}`;
+    timeEl.style.fontWeight = "bold";
+    choicesEl.appendChild(timeEl);
   }
 
   // ✅ DEV TEST FEATURE: press "P" to instantly complete
   document.addEventListener("keydown", (e) => {
     if (e.key.toLowerCase() === "p") {
-      const fakeTimeTaken = "0m 02s";
       questionEl.textContent = `🎉 (DEV) Instant complete activated!`;
       choicesEl.innerHTML = "";
       feedbackEl.textContent = "";
-
+      
       fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
         method: "POST",
         mode: "no-cors",
@@ -292,12 +261,12 @@ document.addEventListener("keydown", (e) => {
         body: JSON.stringify({
           username: username + "_TEST",
           score: 141,
-          time: fakeTimeTaken
+          time: "0m 02s"
         })
       });
 
       const doneEl = document.createElement("p");
-      doneEl.textContent = `✅ Sent test score (${fakeTimeTaken}) to leaderboard`;
+      doneEl.textContent = `✅ Sent test score to leaderboard`;
       doneEl.style.fontWeight = "bold";
       choicesEl.appendChild(doneEl);
     }
@@ -305,6 +274,7 @@ document.addEventListener("keydown", (e) => {
 
   loadQuestion();
 </script>
+
   <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRYc6NXJ6CCeER6Up-wzudumBxvHIfMc35eUTmPcRbwRuLoXC9T_rcM4mlbYVuALsla2Ml3xarWFCRl/pubhtml" 
         width="600" height="400" 
         style="margin-top: 2rem; border:none; border-radius:8px;">
