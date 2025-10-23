@@ -269,17 +269,42 @@ document.addEventListener("keydown", (e) => {
             loadQuestion();
           }
         }, 800);
-     } else {
-  const messages = ["❌ Try again!", "❌ Be better!  "];
-  score += 1;
-  const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-  feedbackEl.textContent = randomMessage;
-}
-
+     } else else {
+      const messages = ["❌ Try again!", "❌ Be better!"];
+      score += 1;
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      feedbackEl.textContent = randomMessage;
     }
+  }
 
-    loadQuestion();
-  </script>
+  // ✅ DEV TEST FEATURE: press "P" to instantly complete
+  document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "p") {
+      const fakeTimeTaken = "0m 02s";
+      questionEl.textContent = `🎉 (DEV) Instant complete activated!`;
+      choicesEl.innerHTML = "";
+      feedbackEl.textContent = "";
+
+      fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username + "_TEST",
+          score: 141,
+          time: fakeTimeTaken
+        })
+      });
+
+      const doneEl = document.createElement("p");
+      doneEl.textContent = `✅ Sent test score (${fakeTimeTaken}) to leaderboard`;
+      doneEl.style.fontWeight = "bold";
+      choicesEl.appendChild(doneEl);
+    }
+  });
+
+  loadQuestion();
+</script>
   <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRYc6NXJ6CCeER6Up-wzudumBxvHIfMc35eUTmPcRbwRuLoXC9T_rcM4mlbYVuALsla2Ml3xarWFCRl/pubhtml" 
         width="600" height="400" 
         style="margin-top: 2rem; border:none; border-radius:8px;">
