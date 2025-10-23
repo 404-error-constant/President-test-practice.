@@ -262,11 +262,11 @@ const timeTaken = `${hh}:${mm}:${ss}`;  // "01:05:32" style
   }
 
   // ✅ DEV TEST FEATURE: press "P" to instantly complete
-  document.addEventListener("keydown", (e) => {
-    if (e.key.toLowerCase() === "p") {
-      questionEl.textContent = `🎉 (DEV) Instant complete activated!`;
-      choicesEl.innerHTML = "";
-      feedbackEl.textContent = "";
+ // document.addEventListener("keydown", (e) => {
+   // if (e.key.toLowerCase() === "p") {
+     // questionEl.textContent = `🎉 (DEV) Instant complete activated!`;
+      //choicesEl.innerHTML = "";
+      //feedbackEl.textContent = "";
       
       fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
         method: "POST",
