@@ -220,11 +220,20 @@
   }
 
   function finishQuiz() {
-    endTime = Date.now();
-    const elapsed = Math.floor((endTime - startTime) / 1000); 
-    const minutes = Math.floor(elapsed / 60);
-    const seconds = elapsed % 60;
-    const timeTaken = `${minutes}m ${seconds}s`;
+   endTime = Date.now();
+let elapsed = Math.floor((endTime - startTime) / 1000); // in seconds
+
+const hours = Math.floor(elapsed / 3600);
+elapsed %= 3600;
+const minutes = Math.floor(elapsed / 60);
+const seconds = elapsed % 60;
+
+// pad with 0 if needed
+const hh = String(hours).padStart(2, '0');
+const mm = String(minutes).padStart(2, '0');
+const ss = String(seconds).padStart(2, '0');
+
+const timeTaken = `${hh}:${mm}:${ss}`;  // "01:05:32" style
 
     questionEl.textContent = `🎉 You finished all questions and only got ${score} wrong out of 141!`;
     choicesEl.innerHTML = "";
