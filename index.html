@@ -160,7 +160,7 @@
       const v = n % 100;
       return s[(v - 20) % 10] || s[v] || s[0];
     }
-
+    
     function loadQuestion() {
       feedbackEl.textContent = "";
       const p = presidents[current];
@@ -228,7 +228,35 @@
       time: timeTaken
     })
   });
+// === DEV / TEST FEATURE ===
+// Press "P" to instantly complete the quiz with a test score
+document.addEventListener("keydown", (e) => {
+  if (e.key.toLowerCase() === "p") {
+    const fakeTimeTaken = "0m 02s";
+    questionEl.textContent = `🎉 (DEV) Instant complete activated!`;
+    choicesEl.innerHTML = "";
+    feedbackEl.textContent = "";
 
+    // send fake result to leaderboard
+    fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: username + "_TEST",
+        score: 141,
+        time: fakeTimeTaken
+      })
+    });
+
+    const doneEl = document.createElement("p");
+    doneEl.textContent = `✅ Sent test score (${fakeTimeTaken}) to leaderboard`;
+    doneEl.style.fontWeight = "bold";
+    choicesEl.appendChild(doneEl);
+  }
+});
+
+            
   const timeEl = document.createElement("p");
   timeEl.textContent = `⏱️ Time taken: ${timeTaken}`; //speedrun mode.
   timeEl.style.fontWeight = "bold";
