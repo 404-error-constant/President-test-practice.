@@ -261,30 +261,7 @@ const timeTaken = `${hh}:${mm}:${ss}`;  // "01:05:32" style
     choicesEl.appendChild(timeEl);
   }
 
-  //  DEV TEST FEATURE: press "P" to instantly complete
-  document.addEventListener("keydown", (e) => {
-    if (e.key.toLowerCase() === "`") {
-      questionEl.textContent = `🎉 (DEV) Instant complete activated!`;
-      choicesEl.innerHTML = "";
-      feedbackEl.textContent = "";
-      
-      fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username + " ",
-          score: 141,
-          time: "0m 02s"
-        })
-      });
-
-      const doneEl = document.createElement("p");
-      doneEl.textContent = `✅ Sent test score to leaderboard`;
-      doneEl.style.fontWeight = "bold";
-      choicesEl.appendChild(doneEl);
-    }
-  });
+  
 
   loadQuestion();
 </script>
