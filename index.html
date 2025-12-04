@@ -47,7 +47,7 @@
   background-color: #e0e0e0;
 }
 
-/* ✅ FIXED DARK MODE */
+
 .dark-mode {
   background-color: #333333;
   color: white;
@@ -118,14 +118,14 @@ footer {
     <div id="choices"></div>
     <p id="feedback"></p>
   </div>
-  <button onclick="myFunction()">Toggle dark mode</button>
+  <button onclick="myFunction()">Toggle dark mode 🕶️</button>
   <footer>
     Offical release v.1.7,  repo: https://github.com/404-error-constant/President-test-practice./blob/main 
     Report any bugs or suggestions to Caleb Ybarra, cybar4525@outlook.com
   </footer>
 
  <script>
-  // Prompt for username once and save in localStorage
+  // Prompt for username once and save in localstorage
   let username = localStorage.getItem("quiz_username");
   if (!username) {
     username = prompt("Enter your username for the leaderboard:");
@@ -143,7 +143,7 @@ footer {
   const loadingScreen = document.getElementById('loading-screen');
   const quiz = document.getElementById('quiz');
 
-  // When video ends, hide loading screen and show quiz
+  // When video ends, hide loading screen and show quiz, hopefully
   loadingVideo.onended = () => {
     loadingScreen.style.display = "none";
     quiz.style.display = "block";
@@ -293,7 +293,7 @@ elapsed %= 3600;
 const minutes = Math.floor(elapsed / 60);
 const seconds = elapsed % 60;
 
-// pad with 0 if needed
+//maxium jank
 const hh = String(hours).padStart(2, '0');
 const mm = String(minutes).padStart(2, '0');
 const ss = String(seconds).padStart(2, '0');
