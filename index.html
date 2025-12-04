@@ -48,6 +48,25 @@
       background-color: #e0e0e0;
     }
 
+    #loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+#loading-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
     #feedback {
       margin-top: 1rem;
       font-weight: bold;
@@ -67,7 +86,13 @@
   </style>
 </head>
 <body>
-  <div class="quiz-container">
+  <div id="loading-screen">
+  <video id="loading-video" autoplay muted playsinline>
+    <source src="loading.mp4" type="video/mp4">
+  </video>
+</div>
+
+  <div class="quiz-container" id="quiz" style="display:none;">
     <h2 id="question">Yeah, somethings broken...</h2>
     <div id="choices"></div>
     <p id="feedback"></p>
@@ -92,6 +117,17 @@
 
   let startTime = Date.now();  
   let endTime;                 
+
+  const loadingVideo = document.getElementById('loading-video');
+  const loadingScreen = document.getElementById('loading-screen');
+  const quiz = document.getElementById('quiz');
+
+  // When video ends, hide loading screen and show quiz
+  loadingVideo.onended = () => {
+    loadingScreen.style.display = "none";
+    quiz.style.display = "block";
+  };
+
 
   const presidents = [
   { number: 1, name: "George Washington", years: "1789–1797", party: "None" }, 
