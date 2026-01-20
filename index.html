@@ -92,17 +92,26 @@
   font-weight: bold;
 }
 
-footer {
-  position: fixed;
-  bottom: 10px;
-  left: 0;
-  width: 100%;
+.site-footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  font-size: 0.8rem;
   text-align: center;
-  font-size: 0.85rem;
   color: #666;
-  padding: 0.5rem;
-  background: transparent;
+  line-height: 1.4;
 }
+
+.site-footer a {
+  color: #666;
+  text-decoration: underline;
+}
+
+.privacy-note {
+  margin-top: 0.5rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+
 
   </style>
 </head>
@@ -119,10 +128,23 @@ footer {
     <p id="feedback"></p>
   </div>
   <button onclick="myFunction()">Toggle dark mode 🕶️</button>
-  <footer>
-    Offical release v.1.8.0,  repo: https://github.com/404-error-constant/President-test-practice./blob/main 
-    Report any bugs or suggestions to Caleb Ybarra, cybar4525@outlook.com  ,i think this site complies with FERPA and COPPA, don't sue me.
-  </footer>
+<footer class="site-footer">
+  <div>Official release v1.8.0</div>
+  <div>
+    Repo:
+    <a href="https://github.com/404-error-constant/President-test-practice./blob/main" target="_blank">
+      GitHub
+    </a>
+  </div>
+  <div>
+    Bug reports & suggestions:
+    <a href="mailto:cybar4525@outlook.com">Caleb Ybarra</a>
+  </div>
+  <div class="privacy-note">
+    This site stores user-inputted nicknames, scores, and completion times only.
+  </div>
+</footer>
+
 
  <script>
   // Prompt for username once and save in localstorage
