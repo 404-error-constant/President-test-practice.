@@ -12,6 +12,4 @@ This quiz does not intetionally collect real names, emails, locations, ip adress
 Usernames are self-chosen nicknames only.
 Scores and times are stored for leaderboard display only.
 Do not enter your real name, if you do that, it is stricly your own choice, and i am not responible 
-Please don't sue me
 
-Only if all legal stuff was writen like this...
