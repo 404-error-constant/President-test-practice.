@@ -128,35 +128,39 @@
     <p id="feedback"></p>
   </div>
   <button onclick="myFunction()">Toggle dark mode 🕶️</button>
-<footer class="site-footer">
-  <div>Official release v1.8.0</div>
-  <div>
-    Repo:
-    <a href="https://github.com/404-error-constant/President-test-practice./blob/main" target="_blank">
-      GitHub
-    </a>
-  </div>
-  <div>
-    Bug reports & suggestions:
-    <a href="mailto:cybar4525@outlook.com">Caleb Ybarra</a>
-  </div>
-  <div class="privacy-note">
-    This site stores user-inputted nicknames, scores, and completion times only.
-  </div>
-</footer>
+
 
 
  <script>
   // Prompt for username once and save in localstorage
-  let username = localStorage.getItem("quiz_username");
-  if (!username) {
-    username = prompt("Enter your username for the leaderboard, do not use your full real name for legal reasons:");
-    if (username) {
-      localStorage.setItem("quiz_username", username);
-    } else {
-      username = "Anonymous";
-    }
+function formatUsername(input) {
+  if (!input) return "Anonymous";
+
+  // Keep only letters and spaces
+  let clean = input.replace(/[^a-zA-Z\s]/g, "").trim();
+
+  // Split on first space only
+  const spaceIndex = clean.indexOf(" ");
+
+  if (spaceIndex === -1) {
+    // No space → just first name
+    return clean;
   }
+
+  const firstName = clean.slice(0, spaceIndex);
+  const lastInitial = clean.slice(spaceIndex + 1).trim()[0];
+
+  return lastInitial ? `${firstName} ${lastInitial.toUpperCase()}` : firstName;
+}
+
+// Prompt once and store
+let username = localStorage.getItem("quiz_username");
+
+if (!username) {
+  const raw = prompt("Enter your nickname (full names will be turncated):");
+  username = formatUsername(raw);
+  localStorage.setItem("quiz_username", username);
+}
 
   let startTime = Date.now();  
   let endTime;                 
@@ -352,6 +356,21 @@ const timeTaken = `${hh}:${mm}:${ss}`;  // "01:05:32" style
         width="600" height="300" 
         style="margin-top: 2rem; border:none; border-radius:8px;">
 </iframe>
-
+<footer class="site-footer">
+  <div>Official release v1.8.0</div>
+  <div>
+    Repo:
+    <a href="https://github.com/404-error-constant/President-test-practice./blob/main" target="_blank">
+      GitHub
+    </a>
+  </div>
+  <div>
+    Bug reports & suggestions:
+    <a href="mailto:cybar4525@outlook.com">Caleb Ybarra</a>
+  </div>
+  <div class="privacy-note">
+    This site stores user-inputted nicknames, scores, and completion times only.
+  </div>
+</footer>
 </body>
 </html>
