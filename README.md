@@ -7,7 +7,7 @@ KSD IT has whitelisted my site. If needed, backup site here. https://uspresident
 
 
 
-Privacy Notice:
+PRIVACY NOTICE:
 This quiz does not intetionally collect real names, emails, locations, ip adresses, or personal identifiers.
 Usernames are self-chosen nicknames only.
 Scores and times are stored for leaderboard display only.
