@@ -134,7 +134,10 @@
  <script>
   // Prompt for username once and save in localstorage
 function formatUsername(input) {
-  if (!input) return "Anonymous";
+  if (!input || !input.replace(/[^a-zA-Z\s]/g, "").trim()) {
+  return "Anonymous";
+}
+
 
   // Keep only letters and spaces
   let clean = input.replace(/[^a-zA-Z\s]/g, "").trim();
