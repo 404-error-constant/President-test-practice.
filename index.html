@@ -5,184 +5,145 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>US Presidents Quiz</title>
   <style>
-    
-   body {
-  font-family: Arial, sans-serif;
-  background: #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  margin: 0;
-  padding: 2rem 0;
-  overflow-y: auto;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem 0;
+      overflow-y: auto;
+    }
 
-.quiz-container {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 500px;
-  text-align: center;
-  box-sizing: border-box;
-}
+    .quiz-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-sizing: border-box;
+    }
 
-.choice-btn {
-  display: block;
-  width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.75rem;
-  font-size: 1rem;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  transition: background 0.2s;
-}
+    .choice-btn, .menu-btn {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      transition: background 0.2s;
+    }
 
-.choice-btn:hover {
-  background-color: #e0e0e0;
-}
+    .choice-btn:hover, .menu-btn:hover {
+      background-color: #e0e0e0;
+    }
 
+    .menu-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        font-weight: bold;
+    }
 
-.dark-mode {
-  background-color: #333333;
-  color: white;
-}
+    .menu-btn:hover {
+        background-color: #0056b3;
+    }
 
-.dark-mode .quiz-container {
-  background: #444;
-  color: white;
-}
+    .dark-mode {
+      background-color: #333333;
+      color: white;
+    }
 
-.dark-mode .choice-btn {
-  background: #555;
-  color: white;
-  border-color: #888;
-}
+    .dark-mode .quiz-container {
+      background: #444;
+      color: white;
+    }
 
-.dark-mode .choice-btn:hover {
-  background: #666;
-}
+    .dark-mode .choice-btn {
+      background: #555;
+      color: white;
+      border-color: #888;
+    }
 
-#loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
 
-#loading-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+    #loading-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-#feedback {
-  margin-top: 1rem;
-  font-weight: bold;
-}
+    #feedback {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
 
-.site-footer {
-  margin-top: 2rem;
-  padding: 1rem;
-  font-size: 0.8rem;
-  text-align: center;
-  color: #666;
-  line-height: 1.4;
-}
+    .dashboard-section {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
 
-.site-footer a {
-  color: #666;
-  text-decoration: underline;
-}
-
-.privacy-note {
-  margin-top: 0.5rem;
-  font-style: italic;
-  opacity: 0.8;
-}
-
-
+    .site-footer {
+      margin-top: 2rem;
+      padding: 1rem;
+      font-size: 0.8rem;
+      text-align: center;
+      color: #666;
+    }
   </style>
 </head>
 <body>
-  <div id="loading-screen">
+
+<div id="loading-screen">
   <video id="loading-video" autoplay muted playsinline>
     <source src="loading.mp4" type="video/mp4">
   </video>
 </div>
 
-  <div class="quiz-container" id="quiz" style="display:none;">
-    <h2 id="question">Yeah, somethings broken...</h2>
-    <div id="choices"></div>
-    <p id="feedback"></p>
-  </div>
-  <button onclick="myFunction()">Toggle dark mode 🕶️</button>
+<div class="quiz-container" id="dashboard" style="display:none;">
+    <h1>Quiz Dashboard</h1>
+    <div class="dashboard-section">
+        <p>Select Game Mode:</p>
+        <button class="menu-btn" onclick="setMode('classic')">Classic (All Questions)</button>
+        <button class="menu-btn" onclick="setMode('years')">Years Served Only</button>
+    </div>
+    <div class="dashboard-section">
+        <label>
+            <input type="checkbox" id="shuffle-toggle"> Randomize President Order
+        </label>
+    </div>
+    <button onclick="myFunction()">Toggle dark mode 🕶️</button>
+</div>
 
+<div class="quiz-container" id="quiz" style="display:none;">
+  <h2 id="question">Loading...</h2>
+  <div id="choices"></div>
+  <p id="feedback"></p>
+  <button onclick="location.reload()" style="margin-top:10px; font-size: 0.7rem;">Quit to Menu</button>
+</div>
 
-
- <script>
-  // Prompt for username once and save in localstorage
-function formatUsername(input) {
-  if (!input || !input.replace(/[^a-zA-Z\s]/g, "").trim()) {
-  return "Anonymous";
-}
-
-
-  // Keep only letters and spaces
-  let clean = input.replace(/[^a-zA-Z\s]/g, "").trim();
-
-  // Split on first space only
-  const spaceIndex = clean.indexOf(" ");
-
-  if (spaceIndex === -1) {
-    // No space → just first name
-    return clean;
-  }
-
-  const firstName = clean.slice(0, spaceIndex);
-  const lastInitial = clean.slice(spaceIndex + 1).trim()[0];
-
-  return lastInitial ? `${firstName} ${lastInitial.toUpperCase()}` : firstName;
-}
-
-// Prompt once and store
-let username = localStorage.getItem("quiz_username");
-
-if (!username) {
-  const raw = prompt("Enter your nickname (full names will be turncated):");
-  username = formatUsername(raw);
-  localStorage.setItem("quiz_username", username);
-}
-
-  let startTime = Date.now();  
-  let endTime;                 
-
-  const loadingVideo = document.getElementById('loading-video');
-  const loadingScreen = document.getElementById('loading-screen');
-  const quiz = document.getElementById('quiz');
-
-  // When video ends, hide loading screen and show quiz, hopefully
-  loadingVideo.onended = () => {
-    loadingScreen.style.display = "none";
-    quiz.style.display = "block";
-  };
-
-  function myFunction() {
-   var element = document.body;
-   element.classList.toggle("dark-mode");
-}  
-  const presidents = [
+<script>
+let presidents = [
   { number: 1, name: "George Washington", years: "1789–1797", party: "None" }, 
   { number: 2, name: "John Adams", years: "1797–1801", party: "Federalist" }, 
   { number: 3, name: "Thomas Jefferson", years: "1801–1809", party: "Democratic-Republican" }, 
@@ -232,42 +193,64 @@ if (!username) {
   { number: 47, name: "Donald Trump", years: "2025–Present", party: "Republican" }
 ];
 
-  const questionStages = ['name', 'years', 'party'];
-  let current = 0;
-  let stage = 0;
-  let score = 0;
+let username = localStorage.getItem("quiz_username") || "Anonymous";
+let startTime, endTime;
+let questionStages = ['name', 'years', 'party'];
+let current = 0;
+let stage = 0;
+let score = 0;
+let totalPossiblePoints = 0;
 
-  const questionEl = document.getElementById("question");
-  const choicesEl = document.getElementById("choices");
-  const feedbackEl = document.getElementById("feedback");
+const loadingVideo = document.getElementById('loading-video');
+const loadingScreen = document.getElementById('loading-screen');
+const dashboard = document.getElementById('dashboard');
+const quiz = document.getElementById('quiz');
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const feedbackEl = document.getElementById("feedback");
 
-  function shuffle(array) {
+loadingVideo.onended = () => {
+    loadingScreen.style.display = "none";
+    dashboard.style.display = "block";
+};
+
+function myFunction() {
+    document.body.classList.toggle("dark-mode");
+}
+
+function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
-  }
+}
 
-  //content for the tips page, implement later.
-  // Republican: 19 Presidents
-//Includes the current president, Donald Trump, who is counted once despite serving non-consecutive terms (45th and 47th).
-//Democrat: 16 Presidents
-//Grover Cleveland is counted once here, although he served two non-consecutive terms (22nd and 24th).
-//Whig: 4 Presidents
-//William Henry Harrison, John Tyler, Zachary Taylor, and Millard Fillmore.
-//Democratic-Republican: 4 Presidents
-//Thomas Jefferson, James Madison, James Monroe, and John Quincy Adams.
-//Federalist: 1 President
-//John Adams.
-//None (Unaffiliated): 1 President
-//George Washington.
-//National Union: 1 President
-//Andrew Johnson
+function setMode(mode) {
+    if (mode === 'years') {
+        questionStages = ['years'];
+    } else {
+        questionStages = ['name', 'years', 'party'];
+    }
+    
+    if (document.getElementById('shuffle-toggle').checked) {
+        presidents = shuffle([...presidents]);
+    }
+    
+    totalPossiblePoints = presidents.length * questionStages.length;
+    startQuiz();
+}
 
-  function getOrdinalSuffix(n) {
+function startQuiz() {
+    dashboard.style.display = "none";
+    quiz.style.display = "block";
+    startTime = Date.now();
+    loadQuestion();
+}
+
+function getOrdinalSuffix(n) {
     const s = ["th", "st", "nd", "rd"];
     const v = n % 100;
     return s[(v - 20) % 10] || s[v] || s[0];
-  }
+}
 
-  function loadQuestion() {
+function loadQuestion() {
     feedbackEl.textContent = "";
     const p = presidents[current];
     const type = questionStages[stage];
@@ -275,119 +258,87 @@ if (!username) {
     let options;
 
     if (type === 'name') {
-      questionEl.textContent = `Who was the ${p.number}${getOrdinalSuffix(p.number)} President?`;
-      correctAnswer = p.name;
-      options = presidents.map(x => x.name);
+        questionEl.textContent = `Who was the ${p.number}${getOrdinalSuffix(p.number)} President?`;
+        correctAnswer = p.name;
+        options = presidents.map(x => x.name);
     } else if (type === 'years') {
-      questionEl.textContent = `What years did ${p.name} serve?`;
-      correctAnswer = p.years;
-      options = presidents.map(x => x.years);
+        questionEl.textContent = `What years did ${p.name} (#${p.number}) serve?`;
+        correctAnswer = p.years;
+        options = presidents.map(x => x.years);
     } else if (type === 'party') {
-      questionEl.textContent = `What was ${p.name}'s political party?`;
-      correctAnswer = p.party;
-      options = presidents.map(x => x.party);
+        questionEl.textContent = `What was ${p.name}'s political party?`;
+        correctAnswer = p.party;
+        options = presidents.map(x => x.party);
     }
 
     createChoices(correctAnswer, options);
-  }
+}
 
-  function createChoices(correct, allOptions) {
-    const shuffled = shuffle([...new Set(allOptions)]).filter(opt => opt !== correct).slice(0, 3);
-    const finalOptions = shuffle([correct, ...shuffled]);
+function createChoices(correct, allOptions) {
+    const uniqueOptions = [...new Set(allOptions)];
+    const filtered = uniqueOptions.filter(opt => opt !== correct);
+    const shuffledWrong = shuffle(filtered).slice(0, 3);
+    const finalOptions = shuffle([correct, ...shuffledWrong]);
+    
     choicesEl.innerHTML = "";
-
     finalOptions.forEach(option => {
-      const btn = document.createElement("button");
-      btn.className = "choice-btn";
-      btn.textContent = option;
-      btn.onclick = () => handleAnswer(option, correct);
-      choicesEl.appendChild(btn);
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.textContent = option;
+        btn.onclick = () => handleAnswer(option, correct);
+        choicesEl.appendChild(btn);
     });
-  }
+}
 
-  function handleAnswer(selected, correct) {
+function handleAnswer(selected, correct) {
     if (selected === correct) {
-      feedbackEl.textContent = "Correct!";
-      stage++;
-      if (stage >= questionStages.length) {
-        stage = 0;
-        current++;
-      }
-      setTimeout(() => {
-        if (current >= presidents.length) {
-          finishQuiz();
-        } else {
-          loadQuestion();
+        feedbackEl.textContent = "Correct!";
+        stage++;
+        if (stage >= questionStages.length) {
+            stage = 0;
+            current++;
         }
-      }, 800);
+        setTimeout(() => {
+            if (current >= presidents.length) {
+                finishQuiz();
+            } else {
+                loadQuestion();
+            }
+        }, 600);
     } else {
-      const messages = ["❌ Try again!", "❌ Be better!"];
-      score += 1;
-      feedbackEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+        score += 1;
+        feedbackEl.textContent = "❌ Try again!";
     }
-  }
+}
 
-  function finishQuiz() {
-   endTime = Date.now();
-let elapsed = Math.floor((endTime - startTime) / 1000); // in seconds
+function finishQuiz() {
+    endTime = Date.now();
+    let elapsed = Math.floor((endTime - startTime) / 1000);
+    const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const ss = String(elapsed % 60).padStart(2, '0');
+    const timeTaken = `${mm}:${ss}`;
 
-const hours = Math.floor(elapsed / 3600);
-elapsed %= 3600;
-const minutes = Math.floor(elapsed / 60);
-const seconds = elapsed % 60;
-
-//maxium jank
-const hh = String(hours).padStart(2, '0');
-const mm = String(minutes).padStart(2, '0');
-const ss = String(seconds).padStart(2, '0');
-
-const timeTaken = `${hh}:${mm}:${ss}`;  // "01:05:32" style
-
-    questionEl.textContent = ` You finished all questions and only got ${score} wrong out of 141!`;
-    choicesEl.innerHTML = "";
+    questionEl.textContent = `Finished! ${score} mistakes out of ${totalPossiblePoints} points.`;
+    choicesEl.innerHTML = `<h3>Time: ${timeTaken}</h3><button class="menu-btn" onclick="location.reload()">Back to Dashboard</button>`;
     feedbackEl.textContent = "";
 
     fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: username,
-        score: 141 - score,
-        time: timeTaken
-      })
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            username: username,
+            score: totalPossiblePoints - score,
+            time: timeTaken
+        })
     });
-
-    const timeEl = document.createElement("p");
-    timeEl.textContent = `⏱️ Time taken: ${timeTaken}`;
-    timeEl.style.fontWeight = "bold";
-    choicesEl.appendChild(timeEl);
-  }
-
-  
-
-  loadQuestion();
+}
 </script>
 
-  <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRYc6NXJ6CCeER6Up-wzudumBxvHIfMc35eUTmPcRbwRuLoXC9T_rcM4mlbYVuALsla2Ml3xarWFCRl/pubhtml" 
-        width="600" height="300" 
-        style="margin-top: 2rem; border:none; border-radius:8px;">
-</iframe>
 <footer class="site-footer">
-  <div>Official release v1.8.0,  march, 2026</div>
-  <div>
-    Repo:
-    <a href="https://github.com/Cybar404/President-test-practice." target="_blank">
-      GitHub
-    </a>
-  </div>
-  <div>
-    Built by Caleb Ybarra with help from Chat-GPT: 
-    <a href="mailto:cybar4525@outlook.com">Email</a>
-  </div>
-  <div class="privacy-note">
-    This site stores user-inputted nicknames, scores, and completion times only.
-  </div>
+  <div>Official release v1.9.0, April 2026</div>
+  <div>Built by Caleb Ybarra</div>
 </footer>
+
 </body>
 </html>
