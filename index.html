@@ -127,7 +127,11 @@
         <p>Select Game Mode:</p>
         <button class="menu-btn" onclick="setMode('classic')">Classic mode</button>
         <button class="menu-btn" onclick="setMode('years')">Years Served Only</button>
+    
     </div>
+  <div>
+  KSD broke my leaderboard!  
+  </div>
     <div class="dashboard-section">
         <label>
             <input type="checkbox" id="shuffle-toggle"> Randomize President Order
@@ -322,7 +326,7 @@ function finishQuiz() {
     questionEl.textContent = `Finished! ${score} mistakes out of ${totalPossiblePoints} points.`;
     choicesEl.innerHTML = `<h3>Time: ${timeTaken}</h3><button class="menu-btn" onclick="location.reload()">Back to Dashboard</button>`;
     feedbackEl.textContent = "";
-
+  
     fetch("https://script.google.com/macros/s/AKfycbxD5NQlEQmip-q-ycolIVpJdVkCDqqOD49gOCnhJYrWGmNCgZlTzj2cg45EZi96gFE2Dg/exec", {
         method: "POST",
         mode: "no-cors",
